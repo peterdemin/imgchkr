@@ -1,0 +1,6 @@
+-r base.in
+
+flake8
+flake8-pyproject
+pylint
+pytest

@@ -1,0 +1,10 @@
+-r api.in
+-r background.in
+-r ci.in
+
+flower
+pip-compile-multi
+ipython
+ipdb
+black
+isort
