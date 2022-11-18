@@ -21,8 +21,9 @@ test:  ## run unit tests
 
 .PHONY: lint
 lint:  ## run lint tests
-	pylint -j 0 --rcfile ../pyproject.toml src/imgchkr_bg
+	pylint --rcfile ../pyproject.toml src/imgchkr_bg
 	mypy --config-file ../pyproject.toml src/imgchkr_bg
+	pytype -j auto src/imgchkr_bg
 
 .PHONY: coverage
 coverage: ## check code coverage
