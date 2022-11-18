@@ -1,4 +1,7 @@
-from .app import app
+from imgchkr_api.app_factory import build_app
+
+
+app = build_app()
 
 
 def serve():
