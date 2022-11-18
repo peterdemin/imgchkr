@@ -1,7 +1,7 @@
 {
   "assetPath": {
     "location": "local",
-    "path": "src/imgchkr_bg/testdata/corrupted.jpg"
+    "path": "src/imgchkr_bg/testdata/small.jpg"
   },
   "notifications": {
     "onStart": "http://somevalidurl.com",
