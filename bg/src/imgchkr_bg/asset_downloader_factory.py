@@ -4,9 +4,4 @@ from imgchkr_bg.local_file_reader import LocalFileReader
 
 
 def build_asset_downloader() -> AssetDownloader:
-    return AssetDownloader(
-        {
-            LocationType.LOCAL_FILE: LocalFileReader,
-            # LocationType.HTTP_URL: HTTPDownloader,
-        }
-    )
+    return AssetDownloader({LocationType.LOCAL_FILE: LocalFileReader})
