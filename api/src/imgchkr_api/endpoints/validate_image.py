@@ -2,6 +2,7 @@ from typing import Dict
 
 from celery import Celery, states
 from flask import Flask, Response, jsonify, request, url_for
+
 from imgchkr_api.receiver import ImageCheckRequestReceiver
 
 

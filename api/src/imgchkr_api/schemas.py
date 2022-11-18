@@ -1,4 +1,4 @@
-from imgchkr_api.utils.schema import Schema, Parameter, Nested
+from imgchkr_api.utils.schema import Nested, Parameter, Schema
 
 
 class AssetPathSchema(Schema):

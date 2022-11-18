@@ -1,7 +1,8 @@
 import contextlib
 from typing import Dict, Iterable
-from .base_location_downloader import BaseLocationDownloader, LocationType
+
 from .asset import Asset
+from .base_location_downloader import BaseLocationDownloader, LocationType
 
 
 class AssetDownloader:

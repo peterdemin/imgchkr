@@ -1,4 +1,5 @@
 import os.path
+
 from .base_location_downloader import BaseLocationDownloader
 
 

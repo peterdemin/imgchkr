@@ -7,11 +7,11 @@ class HTTPDownloader(BaseLocationDownloader):
     _CONTENT_LENGTH = 'Content-Length'
 
     def __init__(self, client: httpx.Client, url: str) -> None:
+        super().__init__()
         self._client = client
         self._url = url
         self._response = None
         self._header = b''
-        self.errors = {}
 
     def __enter__(self) -> 'HTTPDownloader':
         try:

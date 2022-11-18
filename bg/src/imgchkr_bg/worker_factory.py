@@ -2,9 +2,10 @@ import os
 
 import httpx
 from celery import Celery
-from imgchkr_bg.tasks.validation import ValidationTask
-from imgchkr_bg.tasks.health import HealthCheckTask
+
 from imgchkr_bg.image_validator_factory import build_image_validator
+from imgchkr_bg.tasks.health import HealthCheckTask
+from imgchkr_bg.tasks.validation import ValidationTask
 from imgchkr_bg.webhook import WebhookNotifier
 
 

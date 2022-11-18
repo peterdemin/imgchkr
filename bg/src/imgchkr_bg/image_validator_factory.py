@@ -1,6 +1,6 @@
+from .asset_downloader_factory import build_asset_downloader
 from .image_header_checker import ImageHeaderChecker
 from .image_validator import ImageValidator
-from .asset_downloader_factory import build_asset_downloader
 
 
 def build_image_validator() -> ImageValidator:

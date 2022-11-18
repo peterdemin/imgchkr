@@ -1,7 +1,7 @@
 from typing import Tuple
 
-from .base_location_downloader import LocationType
 from .asset_downloader import AssetDownloader
+from .base_location_downloader import LocationType
 from .image_header_checker import ImageHeaderChecker
 
 

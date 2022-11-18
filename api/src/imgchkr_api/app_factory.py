@@ -2,6 +2,7 @@ import os
 
 from celery import Celery
 from flask import Flask
+
 from imgchkr_api.endpoints.health import HealthEndpoint
 from imgchkr_api.endpoints.validate_image import ValidateImageEndpoint
 from imgchkr_api.payload_validator import PayloadValidator

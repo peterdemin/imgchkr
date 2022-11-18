@@ -1,5 +1,5 @@
-from marshmallow import Schema as _Schema, fields, validate
-
+from marshmallow import Schema as _Schema
+from marshmallow import fields, validate
 
 Nested = fields.Nested
 __all__ = ('Schema', 'Parameter', 'Nested')

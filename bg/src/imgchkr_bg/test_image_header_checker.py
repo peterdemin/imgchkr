@@ -1,5 +1,6 @@
 import os
 import unittest
+
 from .image_header_checker import ImageHeaderChecker
 
 _HERE = os.path.dirname(__file__)

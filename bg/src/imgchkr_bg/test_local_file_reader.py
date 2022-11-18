@@ -12,7 +12,6 @@ class LocalFileReaderTestCase(unittest.TestCase):
     def setUp(self) -> None:
         self._local_file_reader = LocalFileReader(os.path.join(_TESTDATA, 'small.jpg'))
         self._missing_file_reader = LocalFileReader(os.path.join(_TESTDATA, 'missing'))
-        self._noperm_file_reader = LocalFileReader(os.path.join(_TESTDATA, 'noperm.jpeg'))
 
     def test_small_file_read(self) -> None:
         with self._local_file_reader:
@@ -30,7 +29,3 @@ class LocalFileReaderTestCase(unittest.TestCase):
     def test_missing_file_adds_error(self) -> None:
         with self._missing_file_reader:
             assert self._missing_file_reader.errors == {'open': 'No such file or directory'}
-
-    def test_no_permission_adds_error(self) -> None:
-        with self._noperm_file_reader:
-            assert self._noperm_file_reader.errors == {'open': 'Permission denied'}

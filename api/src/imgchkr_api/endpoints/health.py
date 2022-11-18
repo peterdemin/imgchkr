@@ -1,6 +1,8 @@
 from celery import Celery
 from celery.exceptions import TimeoutError as CeleryTimeoutError
-from flask import Response, jsonify, Flask
+from flask import Flask, Response, jsonify
+
+from imgchkr_api.constants import HEALTH_TASK
 
 
 class HealthEndpoint:
@@ -11,7 +13,7 @@ class HealthEndpoint:
         return jsonify("ok")
 
     def deep_health_check(self) -> Response:
-        task = self._celery.send_task('tasks.health')
+        task = self._celery.send_task(HEALTH_TASK)
         try:
             result = task.get(timeout=5)
         except CeleryTimeoutError:

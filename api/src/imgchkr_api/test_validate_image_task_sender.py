@@ -1,8 +1,9 @@
 import unittest
-from unittest import mock
 from collections import namedtuple
+from unittest import mock
 
 from celery import Celery
+
 from imgchkr_api.validate_image_task_sender import ValidateImageTaskSender
 
 

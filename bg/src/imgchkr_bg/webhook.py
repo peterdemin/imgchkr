@@ -3,7 +3,8 @@ import httpx
 
 class WebhookNotifier:
     def __init__(
-        self, client: httpx.Client,  # on_success: str, on_failure: str, on_start: str
+        self,
+        client: httpx.Client,  # on_success: str, on_failure: str, on_start: str
     ) -> None:
         # self._on_success = on_success
         # self._on_failure = on_failure

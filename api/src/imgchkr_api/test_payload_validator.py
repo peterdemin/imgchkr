@@ -27,7 +27,7 @@ class PayloadValidatorTestCase(unittest.TestCase):
 
     def test_catches_long_value(self) -> None:
         self._assert_fails(
-            {'nestedParam': {'param': 'X'*10000}},
+            {'nestedParam': {'param': 'X' * 10000}},
             {'nestedParam': {'param': ['Length must be between 1 and 2048.']}},
         )
 

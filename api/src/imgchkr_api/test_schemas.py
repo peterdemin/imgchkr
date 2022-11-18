@@ -1,6 +1,7 @@
 import unittest
 
 from marshmallow import ValidationError
+
 from imgchkr_api.schemas import ValidateImageRequestSchema
 
 
