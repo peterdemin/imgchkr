@@ -14,3 +14,14 @@ run:
 .PHONY: clean
 clean:
 	rm -rf build dist *.egg-info
+
+.PHONY: test
+test:  ## run unit tests
+	pytest -vvvs
+
+.PHONY: coverage
+coverage: ## check code coverage
+	pytest -vvvs --cov=imgchkr_api
+	coverage report -m
+	coverage html
+	$(BROWSER) htmlcov/index.html

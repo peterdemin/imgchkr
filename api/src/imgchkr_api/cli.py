@@ -1,5 +1,4 @@
 from .app import app
-from . import views as _
 
 
 def serve():

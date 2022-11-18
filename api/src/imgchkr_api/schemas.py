@@ -1,17 +1,17 @@
-from marshmallow import Schema, fields
+from imgchkr_api.utils.schema import Schema, Parameter, Nested
 
 
 class AssetPathSchema(Schema):
-    location = fields.Str()
-    path = fields.Str()
+    location = Parameter()
+    path = Parameter()
 
 
 class NotificationsSchema(Schema):
-    on_start = fields.URL()
-    on_success = fields.URL()
-    on_failure = fields.URL()
+    on_start = Parameter()
+    on_success = Parameter()
+    on_failure = Parameter()
 
 
 class ValidateImageRequestSchema(Schema):
-    asset_path = fields.Nested(AssetPathSchema())
-    notifications = fields.Nested(NotificationsSchema())
+    asset_path = Nested(AssetPathSchema())
+    notifications = Nested(NotificationsSchema())

@@ -1,0 +1,11 @@
+{
+  "assetPath": {
+    "location": "local",
+    "path": "src/imgchkr_bg/testdata/small.jpg"
+  },
+  "notifications": {
+    "onStart": "http://somevalidurl.com",
+    "onSuccess": "http://somevalidurl.com",
+    "onFailure": "invalid"
+  }
+}

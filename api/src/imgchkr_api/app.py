@@ -1,4 +1,4 @@
-from flask import Flask
+from imgchkr_api.app_factory import build_app
 
 
-app = Flask(__name__)
+app = build_app()

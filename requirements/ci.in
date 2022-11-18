@@ -4,3 +4,5 @@ flake8
 flake8-pyproject
 pylint
 pytest
+pytest-cov
+coverage

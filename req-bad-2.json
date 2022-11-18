@@ -1,0 +1,10 @@
+{
+  "assetPath": {
+    "location": "web",
+    "path": "./images/foo"
+  },
+  "notifications": {
+    "onStart": "http://somevalidurl.com",
+    "onSuccess": "http://somevalidurl.com"
+  }
+}

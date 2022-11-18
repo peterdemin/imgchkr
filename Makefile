@@ -35,19 +35,19 @@ sync: sync_ext install_dev
 
 .PHONY: lock
 lock: virtual_env_set
-	pip-compile-multi --no-upgrade --autoresolve --skip-constraints
+	pip-compile-multi --autoresolve --skip-constraints --use-cache \
+		--no-upgrade
 
 .PHONY: upgrade
 upgrade: virtual_env_set
-	pip-compile-multi --autoresolve --skip-constraints
+	pip-compile-multi --autoresolve --skip-constraints --use-cache
 
 ### CI ###
 .PHONY: test
 test:
-	tox
+	cd api && make test
+	cd bg && make test
 
-.PHONY: clean
-clean:
-	rm -rf build dist pip-compile-multi.egg-info docs/_build
-	find . -name "*.pyc" -delete
-	find * -type d -name '__pycache__' | xargs rm -rf
+.PHONY: coverage
+coverage:
+	cd api && make coverage
