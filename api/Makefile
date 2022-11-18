@@ -45,6 +45,10 @@ clean:  ## remove all build artifacts
 test:  ## run unit tests
 	pytest -vvvs
 
+.PHONY: lint
+lint:  ## run lint tests
+	pylint --rcfile ../pyproject.toml src/imgchkr_api
+
 .PHONY: coverage
 coverage: ## check code coverage
 	pytest -vvvs --cov=imgchkr_api

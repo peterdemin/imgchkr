@@ -49,6 +49,11 @@ test:
 	$(MAKE) -C bg test
 	@diff -u api/src/imgchkr_api/constants.py bg/src/imgchkr_bg/constants.py
 
+.PHONY: lint
+lint:
+	$(MAKE) -C api lint
+	$(MAKE) -C bg lint
+
 .PHONY: coverage
 coverage:
 	$(MAKE) -C api coverage
