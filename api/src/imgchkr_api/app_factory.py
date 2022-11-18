@@ -5,6 +5,7 @@ from flask import Flask
 
 from imgchkr_api.endpoints.health import HealthEndpoint
 from imgchkr_api.endpoints.validate_image import ValidateImageEndpoint
+from imgchkr_api.endpoints.debug import DebugEndpoint
 from imgchkr_api.payload_validator import PayloadValidator
 from imgchkr_api.receiver import ImageCheckRequestReceiver
 from imgchkr_api.schemas import ValidateImageRequestSchema
@@ -26,4 +27,5 @@ def build_app() -> Flask:
         ),
     ).bind(app)
     HealthEndpoint(celery=celery).bind(app)
+    DebugEndpoint().bind(app)
     return app

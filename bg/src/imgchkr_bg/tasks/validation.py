@@ -7,26 +7,44 @@ from imgchkr_api.constants import VALIDATE_IMAGE_TASK
 from imgchkr_bg.base_location_downloader import LocationType
 from imgchkr_bg.image_validator import ImageValidator
 from imgchkr_bg.image_validator_factory import build_image_validator
+from imgchkr_bg.notifier import Notifier
 from imgchkr_bg.schemas import FlatValidateImageRequestSchema
-from imgchkr_bg.webhook import WebhookNotifier
 
 
 class ValidationTask:
-    def __init__(self, image_validator: ImageValidator, webhook_notifier: WebhookNotifier) -> None:
+    def __init__(self, image_validator: ImageValidator, notifier: Notifier) -> None:
         self._image_validator = image_validator
-        self._webhook_notifier = webhook_notifier
+        self._notifier = notifier
 
     def validate(self, task_id, **kwargs: str) -> dict:
         params, errors = self._parse_params(kwargs)
         if params:
+            notification_error = self._notifier(
+                params['on_start'], self._format_result(task_id, 'started')
+            )
+            if notification_error:
+                errors['notifications'] = {'on_start': notification_error}
             image_validator = build_image_validator()
-            errors = image_validator(
-                location_type=LocationType(params['location']),
-                path=params['path'],
+            errors.update(
+                image_validator(
+                    location_type=LocationType(params['location']),
+                    path=params['path'],
+                )
             )
         if errors:
-            return self._format_result(task_id, 'failed', errors=errors)
-        return self._format_result(task_id, 'success')
+            result = self._format_result(task_id, 'failed', errors=errors)
+            notification_error = self._notifier(params['on_failure'], result)
+            if notification_error:
+                result['errors'].setdefault('notifications', {})['on_failure'] = notification_error
+            return result
+        result = self._format_result(task_id, 'success')
+        notification_error = self._notifier(params['on_success'], result)
+        if notification_error:
+            result['errors'] = {'notifications': {'on_success': notification_error}}
+            notification_error = self._notifier(params['on_failure'], result)
+            if notification_error:
+                result['errors']['notifications']['on_failure'] = notification_error
+        return result
 
     def _parse_params(self, kwargs) -> Tuple[dict, dict]:
         schema = FlatValidateImageRequestSchema()

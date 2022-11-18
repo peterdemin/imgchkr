@@ -6,7 +6,7 @@ from celery import Celery
 from imgchkr_bg.image_validator_factory import build_image_validator
 from imgchkr_bg.tasks.health import HealthCheckTask
 from imgchkr_bg.tasks.validation import ValidationTask
-from imgchkr_bg.webhook import WebhookNotifier
+from imgchkr_bg.notifier import Notifier
 
 
 def build_worker() -> Celery:
@@ -17,7 +17,7 @@ def build_worker() -> Celery:
     )
     ValidationTask(
         image_validator=build_image_validator(),
-        webhook_notifier=WebhookNotifier(client=httpx.Client()),
+        notifier=Notifier(client=httpx.Client()),
     ).bind(celery)
     HealthCheckTask().bind(celery)
     return celery

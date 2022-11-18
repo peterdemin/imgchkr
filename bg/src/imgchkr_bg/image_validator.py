@@ -3,6 +3,7 @@ from typing import Tuple
 from .asset_downloader import AssetDownloader
 from .base_location_downloader import LocationType
 from .image_header_checker import ImageHeaderChecker
+from .image_checker import ImageChecker
 
 
 class ImageValidator:
@@ -10,31 +11,25 @@ class ImageValidator:
         self,
         asset_downloader: AssetDownloader,
         header_checker: ImageHeaderChecker,
-        # image_checker: ImageChecker,
+        image_checker: ImageChecker,
     ) -> None:
         self._asset_downloader = asset_downloader
         self._header_checker = header_checker
-        # self._image_checker = image_checker
+        self._image_checker = image_checker
 
     def __call__(self, location_type: LocationType, path: str) -> dict:
         image_data, errors = self._download(location_type, path)
-        if errors:
-            return errors
-        del image_data
-        return {}
-        # errors = self._image_checker(image_data)
-        # return errors
+        return errors or self._image_checker(image_data)
 
     def _download(self, location_type: LocationType, path: str) -> Tuple[bytes, dict]:
         with self._asset_downloader(location_type, path) as asset:
             errors = asset.check_exists()
             if errors:
                 return b'', errors
-            _, more_errors = asset.get_size()
-            errors.update(more_errors)
+            _, errors = asset.get_size()
             header, more_errors = asset.get_header()
             errors.update(more_errors)
-            if errors:
+            if more_errors:
                 return b'', errors
             more_errors = self._header_checker(header)
             errors.update(more_errors)
@@ -44,8 +39,6 @@ class ImageValidator:
             errors.update(more_errors)
             if errors:
                 return b'', errors
-            # more_errors = self._image_checker(image_data)
-            # errors.update(more_errors)
         if errors:
             return b'', errors
         return image_data, {}

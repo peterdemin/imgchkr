@@ -4,8 +4,8 @@
     "path": "src/imgchkr_bg/testdata/corrupted.jpg"
   },
   "notifications": {
-    "onStart": "http://somevalidurl.com",
-    "onSuccess": "http://somevalidurl.com",
-    "onFailure": "http://somevalidurl.com"
+    "onStart": "http://localhost:5001/print/onStart",
+    "onSuccess": "http://localhost:5001/print/onSuccess",
+    "onFailure": "http://localhost:5001/print/onFailure"
   }
 }
