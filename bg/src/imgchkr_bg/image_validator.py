@@ -3,19 +3,16 @@ from typing import Tuple
 from .base_location_downloader import LocationType
 from .asset_downloader import AssetDownloader
 from .image_header_checker import ImageHeaderChecker
-from .webhook import WebhookNotifier
 
 
 class ImageValidator:
     def __init__(
         self,
         asset_downloader: AssetDownloader,
-        webhook_notifier: WebhookNotifier,
         header_checker: ImageHeaderChecker,
         # image_checker: ImageChecker,
     ) -> None:
         self._asset_downloader = asset_downloader
-        self._webhook_notifier = webhook_notifier
         self._header_checker = header_checker
         # self._image_checker = image_checker
 

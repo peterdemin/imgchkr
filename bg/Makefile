@@ -9,7 +9,7 @@ install:
 .PHONY: run
 run:
 	watchmedo auto-restart --directory=src/imgchkr_bg --pattern=*.py --recursive -- \
-		celery -A imgchkr_bg.tasks worker --concurrency=1 --loglevel=INFO -E
+		python -m imgchkr_bg.cli
 
 .PHONY: clean
 clean:
