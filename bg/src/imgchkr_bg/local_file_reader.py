@@ -1,13 +1,13 @@
 import os.path
+from typing import BinaryIO, Optional
 
 from .base_location_downloader import BaseLocationDownloader
 
 
 class LocalFileReader(BaseLocationDownloader):
     def __init__(self, path: str) -> None:
-        super().__init__()
-        self._path = path
-        self._file = None
+        super().__init__(path)
+        self._file: Optional[BinaryIO] = None
         self._header = b''
 
     def __enter__(self):
@@ -35,6 +35,7 @@ class LocalFileReader(BaseLocationDownloader):
         return size
 
     def fetch_header(self) -> bytes:
+        assert self._file
         try:
             self._header = self._file.read(self._HEADER_SIZE)
         except OSError as exc:
@@ -42,6 +43,7 @@ class LocalFileReader(BaseLocationDownloader):
         return self._header
 
     def fetch_content(self) -> bytes:
+        assert self._file
         try:
             return self._header + self._file.read()
         except OSError as exc:

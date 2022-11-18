@@ -17,12 +17,12 @@ class ImageCheckRequestReceiverTestCase(unittest.TestCase):
         self._payload_validator.return_value = self._VALID_PAYLOAD
         self._task_sender.return_value = 'task_id'
 
-    def test_receive_sample_request(self) -> str:
+    def test_receive_sample_request(self) -> None:
         task_id, errors = self._image_check_request_receiver({'key': 'value'})
         assert task_id == 'task_id'
         assert errors == {}
 
-    def test_validation_failure(self) -> str:
+    def test_validation_failure(self) -> None:
         self._payload_validator.side_effect = self._payload_validator.Error({'key': 'bad'})
         task_id, errors = self._image_check_request_receiver({'key': 'value'})
         assert task_id == ''

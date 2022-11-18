@@ -1,6 +1,6 @@
 from celery import Celery
 
-from imgchkr_api.constants import HEALTH_TASK
+from imgchkr_bg.constants import HEALTH_TASK
 
 
 class HealthCheckTask:

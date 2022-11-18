@@ -13,7 +13,7 @@ class ValidateImageTaskSenderTestCase(unittest.TestCase):
         self._celery.send_task.return_value = namedtuple('FakeTask', 'id')('task_id')
         self._validate_image_task_sender = ValidateImageTaskSender(self._celery)
 
-    def test_send_sample_tasks(self) -> str:
+    def test_send_sample_tasks(self) -> None:
         task_id = self._validate_image_task_sender(key='value')
         assert task_id == 'task_id'
         self._celery.send_task.assert_called_once_with(

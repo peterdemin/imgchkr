@@ -21,11 +21,12 @@ test:  ## run unit tests
 
 .PHONY: lint
 lint:  ## run lint tests
-	pylint --rcfile ../pyproject.toml src/imgchkr_bg
+	pylint -j 0 --rcfile ../pyproject.toml src/imgchkr_bg
+	mypy --config-file ../pyproject.toml src/imgchkr_bg
 
 .PHONY: coverage
 coverage: ## check code coverage
-	pytest -vvvs --cov=imgchkr_api
+	pytest -vvvs --cov=imgchkr_bg
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html

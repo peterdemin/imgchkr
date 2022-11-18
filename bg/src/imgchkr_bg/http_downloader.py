@@ -1,3 +1,4 @@
+from typing import Optional, ContextManager
 import httpx
 
 from .base_location_downloader import BaseLocationDownloader
@@ -7,15 +8,14 @@ class HTTPDownloader(BaseLocationDownloader):
     _CONTENT_LENGTH = 'Content-Length'
 
     def __init__(self, client: httpx.Client, url: str) -> None:
-        super().__init__()
+        super().__init__(url)
         self._client = client
-        self._url = url
-        self._response = None
+        self._response: Optional[ContextManager[httpx.Response]] = None
         self._header = b''
 
     def __enter__(self) -> 'HTTPDownloader':
         try:
-            self._response = self._client.stream("GET", self._url)
+            self._response = self._client.stream("GET", self._path)
         except IOError as exc:
             self.errors['open'] = str(exc)
         return self

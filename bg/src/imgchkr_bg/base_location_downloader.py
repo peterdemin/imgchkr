@@ -1,3 +1,4 @@
+from typing import Dict, Any
 import enum
 
 
@@ -10,8 +11,9 @@ class BaseLocationDownloader:
     _HEADER_SIZE = 2048
     _MAX_CONTENT_LENGTH = 10 * 1024 * 1024  # 10 MiB
 
-    def __init__(self) -> None:
-        self.errors = {}
+    def __init__(self, path: str) -> None:
+        self.errors: Dict[str, Any] = {}
+        self._path = path
 
     def __enter__(self) -> 'BaseLocationDownloader':
         raise NotImplementedError()

@@ -7,15 +7,15 @@ from .base_location_downloader import BaseLocationDownloader
 
 class AssetTestCase(unittest.TestCase):
     def setUp(self) -> None:
-        self._downloader = mock.Mock(wraps=BaseLocationDownloader())
+        self._downloader = mock.Mock(wraps=BaseLocationDownloader('path'))
         self._downloader.errors = {}
         self._asset = Asset(self._downloader)
 
-    def test_check_exists_success(self) -> dict:
+    def test_check_exists_success(self) -> None:
         self._downloader.exists.return_value = True
         assert self._asset.check_exists() == {}
 
-    def test_check_exists_passes_error(self) -> dict:
+    def test_check_exists_passes_error(self) -> None:
         self._downloader.exists.return_value = False
         self._downloader.errors = self._ERRORS
         assert self._asset.check_exists() == self._ERRORS

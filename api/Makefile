@@ -47,7 +47,8 @@ test:  ## run unit tests
 
 .PHONY: lint
 lint:  ## run lint tests
-	pylint --rcfile ../pyproject.toml src/imgchkr_api
+	pylint -j 0 --rcfile ../pyproject.toml src/imgchkr_api
+	mypy --config-file ../pyproject.toml src/imgchkr_api
 
 .PHONY: coverage
 coverage: ## check code coverage

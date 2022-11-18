@@ -3,7 +3,7 @@ from typing import Tuple
 from celery import Celery
 from marshmallow import ValidationError
 
-from imgchkr_api.constants import VALIDATE_IMAGE_TASK
+from imgchkr_bg.constants import VALIDATE_IMAGE_TASK
 from imgchkr_bg.base_location_downloader import LocationType
 from imgchkr_bg.image_validator import ImageValidator
 from imgchkr_bg.image_validator_factory import build_image_validator
