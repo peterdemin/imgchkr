@@ -47,6 +47,7 @@ upgrade: virtual_env_set
 test:
 	$(MAKE) -C api test
 	$(MAKE) -C bg test
+	@diff -u api/src/imgchkr_api/constants.py bg/src/imgchkr_bg/constants.py
 
 .PHONY: coverage
 coverage:
