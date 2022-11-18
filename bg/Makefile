@@ -13,7 +13,7 @@ run:
 
 .PHONY: clean
 clean:
-	rm -rf build dist *.egg-info
+	rm -rf build dist htmlcov src/*.egg-info src/*/__pycache__
 
 .PHONY: test
 test:  ## run unit tests

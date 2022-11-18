@@ -7,17 +7,17 @@ endif
 ### DEV ###
 .PHONY: run_bg
 run_api:
-	cd api && make run
+	$(MAKE) -C api run
 
 .PHONY: run_bg
 run_bg:
-	cd bg && make run
+	$(MAKE) -C bg run
 
 ### DEPENDENCIES ###
 .PHONY: install_dev
 install_dev:
-	cd api && make install
-	cd bg && make install
+	$(MAKE) -C api install
+	$(MAKE) -C bg install
 
 .PHONY: install_ext
 install_ext: requirements/local.txt virtual_env_set
@@ -45,9 +45,16 @@ upgrade: virtual_env_set
 ### CI ###
 .PHONY: test
 test:
-	cd api && make test
-	cd bg && make test
+	$(MAKE) -C api test
+	$(MAKE) -C bg test
 
 .PHONY: coverage
 coverage:
-	cd api && make coverage
+	$(MAKE) -C api coverage
+
+
+### MISC ###
+.PHONY: clean
+clean:
+	$(MAKE) -C api clean
+	$(MAKE) -C bg clean

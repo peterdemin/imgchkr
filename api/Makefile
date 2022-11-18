@@ -39,7 +39,7 @@ run:  ## run API server in debug mode
 
 .PHONY: clean
 clean:  ## remove all build artifacts
-	rm -rf build dist *.egg-info
+	rm -rf build dist htmlcov src/*.egg-info src/*/__pycache__
 
 .PHONY: test
 test:  ## run unit tests
