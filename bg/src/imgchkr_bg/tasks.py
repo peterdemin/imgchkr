@@ -31,7 +31,6 @@ def setup_celery(celery) -> None:
 
 
 def validate_image(self, **kwargs) -> dict:
-    1/0
     schema = FlatValidateImageRequestSchema()
     try:
         params = schema.load(kwargs)
