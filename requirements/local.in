@@ -1,16 +1,11 @@
 -r api.in
 -r background.in
 -r ci.in
--r flower.in
 
-flower
 pip-compile-multi
 ipython
 ipdb
 black
 isort
-mypy
-pytype
-celery-types
-types-Pillow
 watchdog
+pytype

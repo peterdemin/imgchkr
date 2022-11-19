@@ -46,9 +46,9 @@ lock: virtual_env_set
 upgrade: virtual_env_set
 	pip-compile-multi --autoresolve --skip-constraints --use-cache
 
-### CI ###
-.PHONY: test
-test:
+### LOCAL QA ###
+.PHONY: t
+t:
 	$(MAKE) -C api test
 	$(MAKE) -C bg test
 	@diff -u api/src/imgchkr_api/constants.py bg/src/imgchkr_bg/constants.py
@@ -58,11 +58,22 @@ lint:
 	$(MAKE) -C api lint
 	$(MAKE) -C bg lint
 
+.PHONY: cov
+cov:
+	$(MAKE) -C api cov
+	$(MAKE) -C bg cov
+
 .PHONY: coverage
 coverage:
 	$(MAKE) -C api coverage
 	$(MAKE) -C bg coverage
 
+
+### DOCKER CI ###
+.PHONY: test
+test:
+	docker-compose build ci
+	docker-compose up ci
 
 ### MISC ###
 .PHONY: clean

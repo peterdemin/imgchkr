@@ -38,6 +38,13 @@ services:
       - worker
     volumes: ['./bg:/bg']
 
+  ci:
+    build:
+      context: .
+      dockerfile: testing/Dockerfile
+    volumes: ['.:/imgchkr']
+    command: /bin/sh testing/ci.sh
+
   redis:
     image: redis:alpine
     ports:

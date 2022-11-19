@@ -4,10 +4,10 @@ ENV CELERY_BROKER_URL redis://redis:6379/0
 ENV CELERY_RESULT_BACKEND redis://redis:6379/0
 ENV C_FORCE_ROOT true
 
-RUN apk add libmagic
+RUN apk add libmagic make
 
 COPY requirements /requirements
-RUN pip install -r requirements/flower.txt -r requirements/api.txt
+RUN pip install -r requirements/ci.txt
 
 COPY . /imgchkr
 WORKDIR /imgchkr

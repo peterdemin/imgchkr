@@ -1,4 +1,5 @@
--r base.in
+-r api.in
+-r background.in
 
 flake8
 flake8-pyproject
@@ -6,3 +7,7 @@ pylint
 pytest
 pytest-cov
 coverage
+mypy
+celery-types
+types-Pillow
+flower

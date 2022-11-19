@@ -53,9 +53,12 @@ lint:  ## run lint tests
 	mypy --config-file ../pyproject.toml src/$(PROJ)
 	pytype -j auto src/$(PROJ)
 
-.PHONY: coverage
-coverage: ## check code coverage
+.PHONY: cov
+cov: ## check code coverage
 	pytest -vvvs --cov=$(PROJ)
 	coverage report -m
 	coverage html
+
+.PHONY: coverage
+coverage: cov ## open code coverage report in browser
 	$(BROWSER) htmlcov/index.html
