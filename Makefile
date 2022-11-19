@@ -1,3 +1,4 @@
+COMPOSE := docker-compose
 COMPOSE_CI := docker-compose -f docker-compose.ci.yml
 
 .PHONY: virtual_env_set
@@ -87,7 +88,16 @@ test-e2e:
 
 .PHONY: server
 server:
-	docker-compose up
+	$(COMPOSE) up
+
+.PHONY: dev-server
+dev-server:
+	$(COMPOSE_CI) up
+
+.PHONY: down
+down:
+	$(COMPOSE) down --remove-orphans
+	$(COMPOSE_CI) down --remove-orphans
 
 
 ### MISC ###

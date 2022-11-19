@@ -45,7 +45,7 @@ redis==4.3.4
     # via -r requirements/base.in
 six==1.16.0
     # via click-repl
-structlog==22.1.0
+structlog==22.2.0
     # via -r requirements/base.in
 vine==5.0.0
     # via

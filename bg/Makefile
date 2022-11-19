@@ -36,7 +36,7 @@ install:  ## install package in development mode
 
 .PHONY: run
 run:  ## run background worker in debug mode with autoreload
-	watchmedo auto-restart --directory=src/imgchkr_bg --pattern=*.py --recursive -- \
+	cd .. && watchmedo auto-restart --directory=bg/src/imgchkr_bg --pattern=*.py --recursive -- \
 		python -m imgchkr_bg.cli
 
 .PHONY: clean

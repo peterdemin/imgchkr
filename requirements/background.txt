@@ -12,11 +12,11 @@ certifi==2022.9.24
     # via
     #   httpcore
     #   httpx
-h11==0.12.0
+h11==0.14.0
     # via httpcore
-httpcore==0.15.0
+httpcore==0.16.1
     # via httpx
-httpx==0.23.0
+httpx==0.23.1
     # via -r requirements/background.in
 idna==3.4
     # via

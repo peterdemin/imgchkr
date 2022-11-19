@@ -10,7 +10,6 @@ services:
     depends_on:
       - redis
       - monitor
-    volumes: ['./api:/api']
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
       interval: 30s
