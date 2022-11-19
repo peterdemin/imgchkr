@@ -2,39 +2,42 @@ version: "3.7"
 services:
   web:
     build:
-      context: ./api
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: api/Dockerfile
     restart: always
     ports:
      - "5001:5001"
     depends_on:
       - redis
+      - monitor
     volumes: ['./api:/api']
+
   worker:
     build:
-      context: ./celery-queue
-      dockerfile: Dockerfile
-    command: celery -A tasks worker -l info -E
+      context: .
+      dockerfile: bg/Dockerfile
     environment:
       CELERY_BROKER_URL: redis://redis
       CELERY_RESULT_BACKEND: redis://redis
     depends_on:
       - redis
-    volumes: ['./celery-queue:/queue']
+    volumes: ['./bg:/bg']
+
   monitor:
     build:
-      context: ./celery-queue
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: testing/Dockerfile
     ports:
      - "5555:5555"
-    command:  ['celery', 'flower', '-A', 'tasks']
+     - "5002:5002"
     environment:
       CELERY_BROKER_URL: redis://redis:6379/0
       CELERY_RESULT_BACKEND: redis://redis:6379/0
     depends_on:
       - redis
       - worker
-    volumes: ['./celery-queue:/queue']
+    volumes: ['./bg:/bg']
+
   redis:
     image: redis:alpine
     ports:

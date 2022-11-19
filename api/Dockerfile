@@ -8,14 +8,14 @@ ENV HOST 0.0.0.0
 ENV PORT 5001
 ENV DEBUG true
 
-COPY . /api
-WORKDIR /api
+COPY requirements /requirements
+RUN pip install -r requirements/api.txt
 
-RUN pip install -U setuptools pip
-RUN pip install -r requirements.txt
+COPY . /imgchkr
+WORKDIR /imgchkr
+
+RUN pip install ./api
 
 EXPOSE 5001
 
-RUN pip install gunicorn
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "3", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5001", "--workers", "3", "imgchkr_api.cli:app"]

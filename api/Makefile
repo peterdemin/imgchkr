@@ -21,6 +21,7 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
+PROJ := imgchkr_api
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -35,7 +36,11 @@ install:  ## install package in development mode
 
 .PHONY: run
 run:  ## run API server in debug mode
-	flask --debug --app imgchkr_api.cli run --port 5001 --host 0.0.0.0
+	flask --debug --app $(PROJ).cli run --port 5001 --host 0.0.0.0
+
+.PHONY: gunicorn
+gunicorn:  ## run API server in debug mode
+	gunicorn --bind 0.0.0.0:5001 --workers 3 imgchkr_api.cli:app
 
 .PHONY: clean
 clean:  ## remove all build artifacts
@@ -47,13 +52,13 @@ test:  ## run unit tests
 
 .PHONY: lint
 lint:  ## run lint tests
-	pylint --rcfile ../pyproject.toml src/imgchkr_api
-	mypy --config-file ../pyproject.toml src/imgchkr_api
-	pytype -j auto src/imgchkr_api
+	pylint --rcfile ../pyproject.toml src/$(PROJ)
+	mypy --config-file ../pyproject.toml src/$(PROJ)
+	pytype -j auto src/$(PROJ)
 
 .PHONY: coverage
 coverage: ## check code coverage
-	pytest -vvvs --cov=imgchkr_api
+	pytest -vvvs --cov=$(PROJ)
 	coverage report -m
 	coverage html
 	$(BROWSER) htmlcov/index.html

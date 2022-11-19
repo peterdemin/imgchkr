@@ -1,8 +1,8 @@
 import contextlib
 from typing import Dict, Iterator, Type
 
-from .asset import Asset
-from .base_location_downloader import BaseLocationDownloader, LocationType
+from imgchkr_bg.asset import Asset
+from imgchkr_bg.base_location_downloader import BaseLocationDownloader, LocationType
 
 
 class AssetDownloader:

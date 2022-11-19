@@ -1,5 +1,6 @@
 from typing import Dict, Mapping, Optional, Tuple, Union, cast
 
+import structlog
 from celery import Celery, states
 from celery.result import AsyncResult
 from flask import Flask, Response, jsonify, request, url_for
@@ -8,14 +9,24 @@ from imgchkr_api.receiver import ImageCheckRequestReceiver
 
 
 class ValidateImageEndpoint:
-    def __init__(self, celery: Celery, receiver: ImageCheckRequestReceiver) -> None:
+    def __init__(
+        self,
+        celery: Celery,
+        receiver: ImageCheckRequestReceiver,
+        logger: structlog.stdlib.BoundLogger,
+    ) -> None:
         self._celery = celery
         self._receiver = receiver
+        self._logger = logger
 
     def submit(self) -> Union[Response, Tuple[Response, int]]:
-        task_id, errors = self._receiver(cast(Mapping, request.json))
+        raw_data = cast(Mapping, request.json)
+        log = self._logger.bind(json=raw_data)
+        task_id, errors = self._receiver(raw_data)
         if errors:
+            log.error('task.invalid', task_id=task_id, errors=errors)
             return jsonify({'errors': errors, 'state': 'failed'}), 400
+        log.info('task.submitted', task_id=task_id)
         return jsonify(self._format_task_status(task_id))
 
     def get_task_status(self, task_id: str) -> Response:
@@ -28,6 +39,7 @@ class ValidateImageEndpoint:
             )
         else:
             result = cast(Dict, async_task.result)
+        self._logger.error('task.status', status=result)
         return jsonify(result)
 
     def _format_task_status(
@@ -35,7 +47,7 @@ class ValidateImageEndpoint:
     ) -> Dict[str, str]:
         return {
             'id': task_id,
-            'url': url_for('task_status', task_id=task_id),
+            'url': url_for('task_status', task_id=task_id, external=True),
             'state': state,
             **(errors or {}),
         }

@@ -1,3 +1,4 @@
+import structlog
 from celery import Celery
 from celery.exceptions import TimeoutError as CeleryTimeoutError
 from flask import Flask, Response, jsonify
@@ -6,10 +7,12 @@ from imgchkr_api.constants import HEALTH_TASK
 
 
 class HealthEndpoint:
-    def __init__(self, celery: Celery) -> None:
+    def __init__(self, celery: Celery, logger: structlog.stdlib.BoundLogger) -> None:
         self._celery = celery
+        self._logger = logger
 
     def health_check(self) -> Response:
+        self._logger.info("health.shallow", status='ok')
         return jsonify("ok")
 
     def deep_health_check(self) -> Response:
@@ -18,6 +21,7 @@ class HealthEndpoint:
             result = task.get(timeout=5)
         except CeleryTimeoutError:
             result = 'timeout'
+        self._logger.info("health.deep", status=result)
         return jsonify({'bg': result})
 
     def bind(self, app: Flask) -> None:

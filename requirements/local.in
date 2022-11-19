@@ -1,6 +1,7 @@
 -r api.in
 -r background.in
 -r ci.in
+-r flower.in
 
 flower
 pip-compile-multi
@@ -12,3 +13,4 @@ mypy
 pytype
 celery-types
 types-Pillow
+watchdog

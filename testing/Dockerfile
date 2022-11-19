@@ -7,11 +7,14 @@ ENV C_FORCE_ROOT true
 RUN apk add libmagic
 
 COPY requirements /requirements
-RUN pip install -r requirements/background.txt
+RUN pip install -r requirements/flower.txt -r requirements/api.txt
 
 COPY . /imgchkr
 WORKDIR /imgchkr
 
-RUN pip install ./bg
+EXPOSE 5002
+EXPOSE 5555
 
-CMD ["celery", "--app", "imgchkr_bg.cli", "worker", "--concurrency=10", "--loglevel=INFO", "-E"]
+RUN pip install ./api ./bg
+
+CMD ["/bin/sh", "testing/start.sh"]

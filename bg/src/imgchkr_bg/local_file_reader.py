@@ -1,5 +1,6 @@
 import os.path
-from typing import BinaryIO, Optional
+import contextlib
+from typing import BinaryIO, Optional, Iterator
 
 from .base_location_downloader import BaseLocationDownloader
 
@@ -11,10 +12,8 @@ class LocalFileReader(BaseLocationDownloader):
         self._header = b''
 
     def __enter__(self):
-        try:
+        with self._except_os_error('open'):
             self._file = open(self._path, 'rb')
-        except OSError as exc:
-            self.errors['open'] = exc.args[1]
         return self
 
     def __exit__(self, exc_type, exc_value, exc_traceback):
@@ -26,26 +25,27 @@ class LocalFileReader(BaseLocationDownloader):
         return self._file is not None
 
     def fetch_size(self) -> int:
-        try:
+        size = 0
+        with self._except_os_error('read'):
             size = os.path.getsize(self._path)
-        except OSError as exc:
-            self.errors['stat'] = exc.args[1]
-            return 0
-        self._check_size(size)
+            self._check_size(size)
         return size
 
     def fetch_header(self) -> bytes:
         assert self._file
-        try:
+        with self._except_os_error('read'):
             self._header = self._file.read(self._HEADER_SIZE)
-        except OSError as exc:
-            self.errors['read'] = exc.args[1]
         return self._header
 
     def fetch_content(self) -> bytes:
         assert self._file
-        try:
+        with self._except_os_error('read'):
             return self._header + self._file.read()
-        except OSError as exc:
-            self.errors['read'] = exc.args[1]
         return self._header
+
+    @contextlib.contextmanager
+    def _except_os_error(self, key: str) -> Iterator:
+        try:
+            yield
+        except OSError as exc:
+            self.errors[key] = exc.args[1]

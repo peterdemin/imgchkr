@@ -1,9 +1,9 @@
 from typing import Tuple
 
-from .asset_downloader import AssetDownloader
-from .base_location_downloader import LocationType
-from .image_header_checker import ImageHeaderChecker
-from .image_checker import ImageChecker
+from imgchkr_bg.asset_downloader import AssetDownloader
+from imgchkr_bg.base_location_downloader import LocationType
+from imgchkr_bg.image_header_checker import ImageHeaderChecker
+from imgchkr_bg.image_checker import ImageChecker
 
 
 class ImageValidator:
@@ -37,8 +37,6 @@ class ImageValidator:
                 return b'', errors
             image_data, more_errors = asset.get_content()
             errors.update(more_errors)
-            if errors:
-                return b'', errors
         if errors:
             return b'', errors
         return image_data, {}

@@ -13,6 +13,10 @@ run_api:
 run_bg:
 	$(MAKE) -C bg run
 
+.PHONY: run_redis
+run_redis:
+	docker run --rm -p 6379:6379 redis:alpine
+
 ### DEPENDENCIES ###
 .PHONY: install_dev
 install_dev:
@@ -57,6 +61,7 @@ lint:
 .PHONY: coverage
 coverage:
 	$(MAKE) -C api coverage
+	$(MAKE) -C bg coverage
 
 
 ### MISC ###
