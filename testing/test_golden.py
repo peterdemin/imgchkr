@@ -17,6 +17,7 @@ _STATUS_URL_PATTERN = 'http://api:5001/check/{}'
 _REQ_GLOB = '*-req.json'
 _RE_REQ_LABEL = re.compile(r'^(?:.*\/)?([^/]+)-req\.json$')
 _RESP_PATTERN = '{}-resp.json'
+_TASK_ID = '00000000-0000-0000-0000-000000000000'
 
 
 def _find_request_files() -> List[str]:
@@ -24,25 +25,26 @@ def _find_request_files() -> List[str]:
 
 
 @pytest.mark.parametrize('request_file', _find_request_files())
-def test_golden_response(request_file):
+def test_golden_response(request_file) -> None:
+    payload = _load(request_file)
+
+    result = _wait_for_task(httpx.post(_SUBMIT_URL, json=payload).json())
+
     response_file = _get_response_file(request_file)
-    with open(request_file, "r", encoding="utf-8") as fobj:
-        payload = json.load(fobj)
-    response = httpx.post(_SUBMIT_URL, json=payload)
-    result = _wait_for_task(response.json())
-    try:
-        with open(response_file, "r", encoding="utf-8") as fobj:
-            expected = json.load(fobj)
-    except OSError:
-        with open(response_file, "w", encoding="utf-8") as fobj:
-            json.dump(result, fobj, indent=2)
+    if not os.path.exists(response_file):
+        _dump(response_file, result)
         return
-    sanitized = _sanitize(result, expected)
-    if sanitized != expected:
-        print(f'Mismatch found in {response_file}. Got:')
-        print(json.dumps(sanitized, indent=2))
-        print('Expected:')
-        print(json.dumps(expected, indent=2))
+    assert result == _load(response_file)
+
+
+def _load(path: str) -> dict:
+    with open(path, "r", encoding="utf-8") as fobj:
+        return json.load(fobj)
+
+
+def _dump(path: str, data: dict) -> None:
+    with open(path, "w", encoding="utf-8") as fobj:
+        json.dump(data, fobj, indent=2)
 
 
 def _get_response_file(request_file: str) -> str:
@@ -60,11 +62,11 @@ def _wait_for_task(status: dict) -> dict:
             break
         response = httpx.get(_STATUS_URL_PATTERN.format(status['id']))
         status = response.json()
-    return status
+    return _sanitize(status)
 
 
-def _sanitize(result: dict, expected: dict) -> dict:
+def _sanitize(result: dict) -> dict:
     sanitized = copy.deepcopy(result)
-    if result.get('id') and expected.get('id'):
-        sanitized['id'] = expected['id']
+    if sanitized.get('id'):
+        sanitized['id'] = _TASK_ID
     return sanitized

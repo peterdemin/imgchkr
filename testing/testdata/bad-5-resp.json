@@ -2,8 +2,9 @@
   "errors": {
     "notifications": {
       "on_start": "[Errno -2] Name does not resolve"
-    }
+    },
+    "open": "No such file or directory"
   },
-  "id": "f23e8ee9-5398-4aa1-9e09-26aa5f49daab",
+  "id": "00000000-0000-0000-0000-000000000000",
   "state": "failed"
 }
