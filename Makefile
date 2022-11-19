@@ -74,17 +74,15 @@ coverage:
 ### DOCKER ###
 .PHONY: test
 test:
-	$(COMPOSE_CI) build ci
 	$(COMPOSE_CI) up ci
 
 .PHONY: test-e2e
 test-e2e:
-	$(COMPOSE_CI) build
-	$(COMPOSE_CI) up
+	$(COMPOSE_CI) up --exit-code-from e2e e2e
+	$(COMPOSE_CI) down
 
 .PHONY: server
 server:
-	docker-compose build
 	docker-compose up
 
 

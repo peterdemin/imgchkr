@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "image": [
+      "Image width exceeds maximum (1800/1000)",
+      "Image height exceeds maximum (1200/1000)"
+    ]
+  },
+  "id": "88b5ff84-8cae-40e7-8e6d-a5586166df80",
+  "state": "failed"
+}

@@ -1,0 +1,9 @@
+{
+  "errors": {
+    "notifications": {
+      "on_start": "[Errno -2] Name does not resolve"
+    }
+  },
+  "id": "f23e8ee9-5398-4aa1-9e09-26aa5f49daab",
+  "state": "failed"
+}

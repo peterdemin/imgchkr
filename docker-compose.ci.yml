@@ -11,6 +11,12 @@ services:
       - redis
       - monitor
     volumes: ['./api:/api']
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
 
   bg:
     build:
@@ -37,6 +43,12 @@ services:
       - redis
       - bg
     volumes: ['./bg:/bg']
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
 
   ci:
     build:

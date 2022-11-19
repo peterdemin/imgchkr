@@ -16,7 +16,7 @@ while [ "$HEALTH" != "ok" ]; do
 done
 PRINTER_PID=$!
 
-REQUEST_FILE="$HERE/testdata/req-$LABEL.json"
+REQUEST_FILE="$HERE/testdata/$LABEL-req.json"
 echo "Request:"
 REQUEST=$(jq -c . < "$REQUEST_FILE" | sed "s/monitor/$MONITOR/g")
 echo "$REQUEST" | jq .

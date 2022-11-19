@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+HERE="${0%/*}"
+
+pytest -vvvs "$HERE/test_golden.py"

@@ -1,5 +1,5 @@
 from logging import getLogger
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import structlog
 from marshmallow import ValidationError
@@ -31,6 +31,9 @@ def validate_image(
 
 class _ValidationSession:  # pylint: disable=too-many-instance-attributes
     _schema = FlatValidateImageRequestSchema()
+    _STARTED = 'started'
+    _SUCCESS = 'success'
+    _FAILED = 'failed'
 
     def __init__(  # pylint: disable=too-many-arguments
         self,
@@ -53,57 +56,63 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
             self._notify_on_success,
             self._notify_on_failure,
         ]
+        self._state = self._STARTED
         self._errors: Dict[str, Any] = {}
+        self._warnings: Dict[str, Any] = {}
 
     def run(self) -> dict:
         for step in self._pipeline:
             step()
-            if self._errors:
+            if self._state == self._FAILED:
                 self._log.error('validation.failed', errors=self._errors)
                 return self._format_result()
-        self._log.info('validate.ok')
+        self._log.info('validation.ok')
         return self._format_result()
 
     def _parse_request(self) -> None:
-        self._log.info('validate.started', kwargs=self._kwargs)
+        self._log.info('validation.started', kwargs=self._kwargs)
         try:
             self._request = self._schema.load(self._kwargs)
         except ValidationError as exc:
             self._errors['parameters'] = exc.messages_dict
+            self._state = self._FAILED
 
     def _notify_on_start(self) -> None:
         notification_error = self._notifier(
-            self._request.on_start, self._format_result(state='started')
+            self._request.on_start, self._format_result()
         )
         if notification_error:
             self._errors['notifications'] = {'on_start': notification_error}
 
     def _validate_image(self) -> None:
-        self._errors.update(
-            self._image_validator(
-                location_type=LocationType(self._request.location),
-                path=self._request.path,
-            )
+        errors = self._image_validator(
+            location_type=LocationType(self._request.location),
+            path=self._request.path,
         )
+        if errors:
+            self._errors.update(errors)
+            self._state = self._FAILED
 
     def _notify_on_success(self) -> None:
-        if self._errors:
+        if self._state == self._FAILED:
             return
+        self._state = self._SUCCESS
         notification_error = self._notifier(self._request.on_success, self._format_result())
         if notification_error:
-            self._errors = {'notifications': {'on_success': notification_error}}
+            self._errors.setdefault('notifications', {})['on_success'] = notification_error
 
     def _notify_on_failure(self) -> None:
-        if not self._errors:
+        if self._state == self._SUCCESS:
             return
+        self._state = self._FAILED
         notification_error = self._notifier(self._request.on_failure, self._format_result())
         if notification_error:
             self._errors.setdefault('notifications', {})['on_failure'] = notification_error
 
-    def _format_result(self, state: Optional[str] = '') -> Dict[str, Any]:
+    def _format_result(self) -> Dict[str, Any]:
         report: Dict[str, Any] = {
             'id': self._task_id,
-            'state': state or ('failed' if self._errors else 'success'),
+            'state': self._state,
         }
         if self._errors:
             report['errors'] = self._errors

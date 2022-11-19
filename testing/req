@@ -6,7 +6,7 @@ LABEL=$1
 API="api:5001"
 HERE="${0%/*}"
 
-REQUEST_FILE="$HERE/testdata/req-$LABEL.json"
+REQUEST_FILE="$HERE/testdata/$LABEL-req.json"
 echo "Request:"
 REQUEST=$(jq -c . < "$REQUEST_FILE")
 echo "$REQUEST" | jq .

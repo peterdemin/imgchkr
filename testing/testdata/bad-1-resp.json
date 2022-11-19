@@ -1,0 +1,10 @@
+{
+  "errors": {
+    "assetPath": {
+      "location": [
+        "Not a valid string."
+      ]
+    }
+  },
+  "state": "failed"
+}
