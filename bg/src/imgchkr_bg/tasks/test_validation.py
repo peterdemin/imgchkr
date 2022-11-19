@@ -25,7 +25,7 @@ class ValidationTaskTestCase(unittest.TestCase):
         self._registered_tasks: List[Callable] = []
         self._celery.task.return_value = self._registered_tasks.append
 
-    @mock.patch("imgchkr_bg.tasks.validation.validate_image", auto_spec=True)
+    @mock.patch("imgchkr_bg.tasks.validation.validate_image", autospec=True)
     def test_bind_to_celery_with_request_id(self, validate_image: mock.Mock) -> None:
         self._task.bind(self._celery)
         self._celery.task.assert_called_once_with(name=VALIDATE_IMAGE_TASK, bind=True)
