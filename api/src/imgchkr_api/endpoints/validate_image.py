@@ -1,4 +1,4 @@
-from typing import Dict, Mapping, Optional, Tuple, cast
+from typing import Dict, Mapping, Optional, Tuple, cast, Any, Type
 
 import structlog
 from celery import Celery, states
@@ -26,37 +26,40 @@ class ValidateImageEndpoint:
         log = self._logger.bind(json=raw_data)
         task_id, errors = self._receiver(raw_data)
         if errors:
-            log.error('task.invalid', task_id=task_id, errors=errors)
+            log.error('task.invalid', errors=errors)
             return {'errors': errors, 'state': 'failed'}, self._HTTP_BAD_REQUEST
         log.info('task.submitted', task_id=task_id)
         return self._format_task_status(task_id), self._HTTP_OK
 
-    def get_task_status(self, task_id: str) -> Response:
-        async_task: AsyncResult = AsyncResult(task_id, app=self._celery)
-        if async_task.state == states.PENDING:
+    def get_task_status(self, task_id: str) -> Dict[str, Any]:
+        async_result = self._get_task(task_id)
+        if async_result.state == states.PENDING:
             result = self._format_task_status(task_id)
-        elif async_task.state == states.FAILURE:
+        elif async_result.state == states.FAILURE:
             result = self._format_task_status(
-                task_id, 'failed', errors={'unhandled': repr(async_task.result)}
+                task_id, 'failed', errors={'unhandled': repr(async_result.result)}
             )
         else:
-            result = cast(Dict, async_task.result)
-        self._logger.error('task.status', status=result)
-        return jsonify(result)
+            result = cast(Dict, async_result.result)
+        self._logger.info('task.status', status=result)
+        return result
+
+    def _get_task(self, task_id: str) -> AsyncResult:
+        return cast(Type[AsyncResult], self._celery.AsyncResult)(task_id)
 
     def _format_task_status(
         self, task_id: str, state: str = 'queued', errors: Optional[dict] = None
     ) -> Dict[str, str]:
-        return {
-            'id': task_id,
-            'state': state,
-            **(errors or {}),
-        }
+        return {'id': task_id, 'state': state, **(errors or {})}
 
     def bind(self, app: Flask) -> None:
         def explicit_submit() -> Tuple[Response, int]:
             data, status_code = self.submit(cast(Mapping, request.json))
             return jsonify(data), status_code
+
+        def explicit_status(task_id) -> Tuple[Response, int]:
+            data = self.get_task_status(task_id)
+            return jsonify(data), 200
 
         app.add_url_rule(
             '/assets/image',
@@ -68,5 +71,5 @@ class ValidateImageEndpoint:
             '/assets/image/<string:task_id>',
             endpoint='task_status',
             methods=['GET'],
-            view_func=self.get_task_status,
+            view_func=explicit_status,
         )
