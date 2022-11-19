@@ -57,7 +57,8 @@ curl http://127.0.0.1:5001/assets/image/<ID>
 
 For example:
 
-```curl http://127.0.0.1:5001/assets/image/497ea3c4-180a-4292-8cc2-0aa1d500d80f
+```
+curl http://127.0.0.1:5001/assets/image/497ea3c4-180a-4292-8cc2-0aa1d500d80f
 {
   "id": "497ea3c4-180a-4292-8cc2-0aa1d500d80f",
   "state": "success"
@@ -70,11 +71,11 @@ For example:
 Tests can be run inside of Docker containers:
 
 ```
-make test  # unit tests
+make test      # unit tests
 make test-e2e  # end-to-end tests
 ```
 
-Or in the activate virtualenv:
+Or in the active virtualenv:
 
 ```
 make install coverage lint

@@ -55,18 +55,30 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
             self._validate_image,
             self._notify_on_success,
             self._notify_on_failure,
+            self._log_result,
         ]
         self._state = self._STARTED
         self._errors: Dict[str, Any] = {}
         self._warnings: Dict[str, Any] = {}
 
     def run(self) -> dict:
+        """Executes validation pipeline.
+
+        All steps are always exercised.
+        Each step decides if it should be executed depending on the current state.
+        Order of steps is important.
+
+        Steps:
+
+            - parse request - populate ``self._request`` dataclass.
+            - notify on start web hook.
+            - validate image using :class:`.ImageValidator`.
+            - notify on success web hook is state is success.
+            - notify on failure web hook is state is failed.
+            - log result.
+        """
         for step in self._pipeline:
             step()
-            if self._state == self._FAILED:
-                self._log.error('validation.failed', errors=self._errors)
-                return self._format_result()
-        self._log.info('validation.ok')
         return self._format_result()
 
     def _parse_request(self) -> None:
@@ -78,6 +90,9 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
             self._state = self._FAILED
 
     def _notify_on_start(self) -> None:
+        if self._state == self._FAILED:
+            # Don't notify if parameters are invalid
+            return
         notification_error = self._notifier(
             self._request.on_start, self._format_result()
         )
@@ -85,6 +100,8 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
             self._errors['notifications'] = {'on_start': notification_error}
 
     def _validate_image(self) -> None:
+        if self._state == self._FAILED:
+            return
         errors = self._image_validator(
             location_type=LocationType(self._request.location),
             path=self._request.path,
@@ -102,12 +119,17 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
             self._errors.setdefault('notifications', {})['on_success'] = notification_error
 
     def _notify_on_failure(self) -> None:
-        if self._state == self._SUCCESS:
+        if self._state != self._FAILED or not self._request.on_failure:
             return
-        self._state = self._FAILED
         notification_error = self._notifier(self._request.on_failure, self._format_result())
         if notification_error:
             self._errors.setdefault('notifications', {})['on_failure'] = notification_error
+
+    def _log_result(self) -> None:
+        if self._state == self._SUCCESS:
+            self._log.info('validation.ok')
+        else:
+            self._log.error('validation.failed', errors=self._errors)
 
     def _format_result(self) -> Dict[str, Any]:
         report: Dict[str, Any] = {

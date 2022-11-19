@@ -1,5 +1,6 @@
 import unittest
 from logging import getLogger
+from typing import Optional
 from unittest import mock
 
 import structlog
@@ -29,13 +30,7 @@ class ValidationSessionTestCase(unittest.TestCase):
         }
 
     def test_successful_validation(self) -> None:
-        result = validate_image(
-            image_validator=self._image_validator,
-            notifier=self._notifier,
-            logger=self._logger,
-            task_id='task_id',
-            kwargs=self._kwargs,
-        )
+        result = self._invoke()
         assert result == {'id': 'task_id', 'state': 'success'}
         assert self._image_validator.call_args == mock.call(
             location_type=LocationType.LOCAL_FILE, path='path'
@@ -51,13 +46,7 @@ class ValidationSessionTestCase(unittest.TestCase):
 
     def test_validation_continues_with_failing_notifications(self) -> None:
         self._notifier.return_value = 'failed'
-        result = validate_image(
-            image_validator=self._image_validator,
-            notifier=self._notifier,
-            logger=self._logger,
-            task_id='task_id',
-            kwargs=self._kwargs,
-        )
+        result = self._invoke()
         assert result == {
             'errors': {'notifications': {'on_start': 'failed', 'on_success': 'failed'}},
             'id': 'task_id',
@@ -84,13 +73,7 @@ class ValidationSessionTestCase(unittest.TestCase):
 
     def test_aborts_on_invalid_arguments(self) -> None:
         kwargs = dict(self._kwargs, on_start='invalid')
-        result = validate_image(
-            image_validator=self._image_validator,
-            notifier=self._notifier,
-            logger=self._logger,
-            task_id='task_id',
-            kwargs=kwargs,
-        )
+        result = self._invoke(kwargs)
         assert result == {
             'errors': {'parameters': {'on_start': ['Not a valid URL.']}},
             'id': 'task_id',
@@ -101,4 +84,30 @@ class ValidationSessionTestCase(unittest.TestCase):
         self._logger.info.assert_called_once_with('validation.started', kwargs=kwargs)
         self._logger.error.assert_called_once_with(
             'validation.failed', errors={'parameters': {'on_start': ['Not a valid URL.']}}
+        )
+
+    def test_bad_image_notifies_for_failure(self) -> None:
+        self._image_validator.return_value = {'image': 'bad'}
+        result = self._invoke()
+        assert result == {'errors': {'image': 'bad'}, 'id': 'task_id', 'state': 'failed'}
+        assert self._notifier.call_args_list == [
+            mock.call('http://start', {'id': 'task_id', 'state': 'started'}),
+            mock.call(
+                'http://failure', {'id': 'task_id', 'state': 'failed', 'errors': {'image': 'bad'}}
+            ),
+        ]
+        assert self._logger.info.call_args_list == [
+            mock.call('validation.started', kwargs=self._kwargs),
+        ]
+        assert self._logger.error.call_args_list == [
+            mock.call('validation.failed', errors={'image': 'bad'}),
+        ]
+
+    def _invoke(self, kwargs: Optional[dict] = None) -> dict:
+        return validate_image(
+            image_validator=self._image_validator,
+            notifier=self._notifier,
+            logger=self._logger,
+            task_id='task_id',
+            kwargs=kwargs or self._kwargs,
         )

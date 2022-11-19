@@ -79,6 +79,3 @@ make test-e2e # which will exercise your end to end system for scenarios
 make test # runs unit tests on the various modules
 make server # will run the service locally to allow the evaluator to access the service via curl commands
 ```
-
-In addition to a working solution, please include a README.md file with at least the following topics addressed.
-If you can think of more topics to discuss feel free to add them! 

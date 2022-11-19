@@ -1,6 +1,7 @@
 {
   "errors": {
     "notifications": {
+      "on_failure": "[Errno -2] Name does not resolve",
       "on_start": "[Errno -2] Name does not resolve"
     },
     "open": "No such file or directory"
