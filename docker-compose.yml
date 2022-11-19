@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  web:
+  api:
     build:
       context: .
       dockerfile: api/Dockerfile
@@ -9,10 +9,9 @@ services:
      - "5001:5001"
     depends_on:
       - redis
-      - monitor
     volumes: ['./api:/api']
 
-  worker:
+  bg:
     build:
       context: .
       dockerfile: bg/Dockerfile
@@ -22,28 +21,6 @@ services:
     depends_on:
       - redis
     volumes: ['./bg:/bg']
-
-  monitor:
-    build:
-      context: .
-      dockerfile: testing/Dockerfile
-    ports:
-     - "5555:5555"
-     - "5002:5002"
-    environment:
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
-    depends_on:
-      - redis
-      - worker
-    volumes: ['./bg:/bg']
-
-  ci:
-    build:
-      context: .
-      dockerfile: testing/Dockerfile
-    volumes: ['.:/imgchkr']
-    command: /bin/sh testing/ci.sh
 
   redis:
     image: redis:alpine

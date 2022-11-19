@@ -1,0 +1,47 @@
+#!/bin/sh
+
+# Make request to a local API
+
+set -e
+
+LABEL=$1
+API="127.0.0.1:5001"
+HERE="${0%/*}"
+MONITOR="127.0.0.1"
+
+python "$HERE/printer.py" &
+while [ "$HEALTH" != "ok" ]; do
+    sleep 1
+    HEALTH=$(curl -s "http://$MONITOR:5002/health")
+done
+PRINTER_PID=$!
+
+REQUEST_FILE="$HERE/testdata/req-$LABEL.json"
+echo "Request:"
+REQUEST=$(jq -c . < "$REQUEST_FILE" | sed "s/monitor/$MONITOR/g")
+echo "$REQUEST" | jq .
+
+RESPONSE=$(
+    curl -s http://$API/assets/image \
+    -XPOST -H "content-type: application/json" \
+    -d "$REQUEST"
+)
+
+echo "Submission response:"
+echo "$RESPONSE" | jq .
+
+TASK_ID=$(echo "$RESPONSE" | jq -r .id)
+
+STATE=$(echo "$RESPONSE" | jq -r .state)
+echo "State: $STATE"
+
+while [ "$STATE" = "queued" ]; do
+    STATUS=$(curl -s "http://$API/check/$TASK_ID")
+
+    echo "Status:"
+    echo "$STATUS"
+    STATE=$(echo "$STATUS" | jq -r .state)
+    sleep 1
+done
+
+kill $PRINTER_PID

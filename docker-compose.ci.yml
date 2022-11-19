@@ -1,0 +1,61 @@
+version: "3.7"
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    restart: always
+    ports:
+     - "5001:5001"
+    depends_on:
+      - redis
+      - monitor
+    volumes: ['./api:/api']
+
+  bg:
+    build:
+      context: .
+      dockerfile: bg/Dockerfile
+    environment:
+      CELERY_BROKER_URL: redis://redis
+      CELERY_RESULT_BACKEND: redis://redis
+    depends_on:
+      - redis
+    volumes: ['./bg:/bg']
+
+  monitor:
+    build:
+      context: .
+      dockerfile: testing/Dockerfile
+    ports:
+     - "5555:5555"
+     - "5002:5002"
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/0
+    depends_on:
+      - redis
+      - bg
+    volumes: ['./bg:/bg']
+
+  ci:
+    build:
+      context: .
+      dockerfile: testing/Dockerfile
+    volumes: ['.:/imgchkr']
+    command: /bin/sh testing/ci.sh
+
+  e2e:
+    build:
+      context: .
+      dockerfile: testing/Dockerfile
+    volumes: ['.:/imgchkr']
+    command: /bin/sh testing/e2e
+    depends_on:
+      - api
+      - monitor
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"

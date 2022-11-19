@@ -1,0 +1,11 @@
+{
+  "assetPath": {
+    "location": "local",
+    "path": "bg/src/imgchkr_bg/testdata/small.jpg"
+  },
+  "notifications": {
+    "onStart": "http://monitor:5002/print/onStart",
+    "onSuccess": "http://monitor:5002/print/onSuccess",
+    "onFailure": "http://monitor:5002/print/onFailure"
+  }
+}

@@ -60,7 +60,7 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
             step()
             if self._errors:
                 self._log.error('validation.failed', errors=self._errors)
-                return self._errors
+                return self._format_result()
         self._log.info('validate.ok')
         return self._format_result()
 

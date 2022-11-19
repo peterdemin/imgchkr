@@ -1,3 +1,5 @@
+COMPOSE_CI := docker-compose -f docker-compose.ci.yml
+
 .PHONY: virtual_env_set
 virtual_env_set:
 ifndef VIRTUAL_ENV
@@ -69,11 +71,22 @@ coverage:
 	$(MAKE) -C bg coverage
 
 
-### DOCKER CI ###
+### DOCKER ###
 .PHONY: test
 test:
-	docker-compose build ci
-	docker-compose up ci
+	$(COMPOSE_CI) build ci
+	$(COMPOSE_CI) up ci
+
+.PHONY: test-e2e
+test-e2e:
+	$(COMPOSE_CI) build
+	$(COMPOSE_CI) up
+
+.PHONY: server
+server:
+	docker-compose build
+	docker-compose up
+
 
 ### MISC ###
 .PHONY: clean

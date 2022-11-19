@@ -1,0 +1,42 @@
+#!/bin/sh
+
+set -e
+
+LABEL=$1
+API="api:5001"
+HERE="${0%/*}"
+
+REQUEST_FILE="$HERE/testdata/req-$LABEL.json"
+echo "Request:"
+REQUEST=$(jq -c . < "$REQUEST_FILE")
+echo "$REQUEST" | jq .
+
+RESPONSE=$(
+    curl -s http://$API/assets/image \
+    -XPOST -H "content-type: application/json" \
+    -d "$REQUEST" \
+    || true
+)
+
+if [ "$RESPONSE" = "" ]; then
+    echo "API unreachable"
+    curl "http://$API/deep_health"
+    exit 1
+fi
+
+echo "Submission response:"
+echo "$RESPONSE" | jq .
+
+TASK_ID=$(echo "$RESPONSE" | jq -r .id)
+
+STATE=$(echo "$RESPONSE" | jq -r .state)
+echo "State: $STATE"
+
+while [ "$STATE" = "queued" ]; do
+    STATUS=$(curl -s "http://$API/check/$TASK_ID")
+
+    echo "Status:"
+    echo "$STATUS"
+    STATE=$(echo "$STATUS" | jq -r .state)
+    sleep 1
+done
