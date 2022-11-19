@@ -33,7 +33,7 @@ STATE=$(echo "$RESPONSE" | jq -r .state)
 echo "State: $STATE"
 
 while [ "$STATE" = "queued" ]; do
-    STATUS=$(curl -s "http://$API/check/$TASK_ID")
+    STATUS=$(curl -s "http://$API/assets/image/$TASK_ID")
 
     echo "Status:"
     echo "$STATUS"

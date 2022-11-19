@@ -1,14 +1,17 @@
-from typing import Dict, Mapping, Optional, Tuple, Union, cast
+from typing import Dict, Mapping, Optional, Tuple, cast
 
 import structlog
 from celery import Celery, states
 from celery.result import AsyncResult
-from flask import Flask, Response, jsonify, request, url_for
+from flask import Flask, Response, jsonify, request
 
 from imgchkr_api.receiver import ImageCheckRequestReceiver
 
 
 class ValidateImageEndpoint:
+    _HTTP_OK = 200
+    _HTTP_BAD_REQUEST = 400
+
     def __init__(
         self,
         celery: Celery,
@@ -19,15 +22,14 @@ class ValidateImageEndpoint:
         self._receiver = receiver
         self._logger = logger
 
-    def submit(self) -> Union[Response, Tuple[Response, int]]:
-        raw_data = cast(Mapping, request.json)
+    def submit(self, raw_data: Mapping) -> Tuple[dict, int]:
         log = self._logger.bind(json=raw_data)
         task_id, errors = self._receiver(raw_data)
         if errors:
             log.error('task.invalid', task_id=task_id, errors=errors)
-            return jsonify({'errors': errors, 'state': 'failed'}), 400
+            return {'errors': errors, 'state': 'failed'}, self._HTTP_BAD_REQUEST
         log.info('task.submitted', task_id=task_id)
-        return jsonify(self._format_task_status(task_id))
+        return self._format_task_status(task_id), self._HTTP_OK
 
     def get_task_status(self, task_id: str) -> Response:
         async_task: AsyncResult = AsyncResult(task_id, app=self._celery)
@@ -47,20 +49,23 @@ class ValidateImageEndpoint:
     ) -> Dict[str, str]:
         return {
             'id': task_id,
-            'url': url_for('task_status', task_id=task_id, external=True),
             'state': state,
             **(errors or {}),
         }
 
     def bind(self, app: Flask) -> None:
+        def explicit_submit() -> Tuple[Response, int]:
+            data, status_code = self.submit(cast(Mapping, request.json))
+            return jsonify(data), status_code
+
         app.add_url_rule(
             '/assets/image',
             endpoint='validate_image',
             methods=['POST'],
-            view_func=self.submit,
+            view_func=explicit_submit,
         )
         app.add_url_rule(
-            '/check/<string:task_id>',
+            '/assets/image/<string:task_id>',
             endpoint='task_status',
             methods=['GET'],
             view_func=self.get_task_status,

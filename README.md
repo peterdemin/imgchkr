@@ -6,12 +6,10 @@ Labelbox’s Annotate product allows Machine Learning teams to efficiently send 
 The high-level goal of this project is to build a pipeline for validating image assets that Labelbox receives from its customers so each labeller is guaranteed a working asset to annotate.
 
 
-## Before you start …
+## Before you start…
 
 During your implementation, feel free to leverage all/any open-source libraries that you deem fit. 
-
 Although we currently use Python for most of our backend services with a sprinkling of Golang, feel free to use the language/technologies you are the most proficient in. 
-
 You can assume that the evaluator of this project will be running a  *nix machine in a terminal with only make, vim, docker, and docker-compose installed and won’t have any of the standard libraries and dependencies required for your implementation. 
 
 ## Requirements

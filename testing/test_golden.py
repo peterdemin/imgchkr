@@ -13,7 +13,7 @@ import httpx
 _HERE = os.path.dirname(__file__)
 _TESTDATA = os.path.join(_HERE, 'testdata')
 _SUBMIT_URL = 'http://api:5001/assets/image'
-_STATUS_URL_PATTERN = 'http://api:5001/check/{}'
+_STATUS_URL_PATTERN = 'http://api:5001/assets/image/{}'
 _REQ_GLOB = '*-req.json'
 _RE_REQ_LABEL = re.compile(r'^(?:.*\/)?([^/]+)-req\.json$')
 _RESP_PATTERN = '{}-resp.json'

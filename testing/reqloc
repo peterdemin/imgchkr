@@ -5,7 +5,7 @@
 set -e
 
 LABEL=$1
-API="127.0.0.1:5001"
+API="127.0.0.1:5001/assets/image"
 HERE="${0%/*}"
 MONITOR="127.0.0.1"
 
@@ -22,7 +22,7 @@ REQUEST=$(jq -c . < "$REQUEST_FILE" | sed "s/monitor/$MONITOR/g")
 echo "$REQUEST" | jq .
 
 RESPONSE=$(
-    curl -s http://$API/assets/image \
+    curl -s http://$API \
     -XPOST -H "content-type: application/json" \
     -d "$REQUEST"
 )
@@ -36,7 +36,7 @@ STATE=$(echo "$RESPONSE" | jq -r .state)
 echo "State: $STATE"
 
 while [ "$STATE" = "queued" ]; do
-    STATUS=$(curl -s "http://$API/check/$TASK_ID")
+    STATUS=$(curl -s "http://$API/$TASK_ID")
 
     echo "Status:"
     echo "$STATUS"
