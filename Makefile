@@ -82,7 +82,7 @@ test:
 
 .PHONY: test-e2e
 test-e2e:
-	$(COMPOSE_CI) up --exit-code-from e2e e2e
+	$(COMPOSE_CI) up --abort-on-container-exit --exit-code-from e2e e2e
 	$(COMPOSE_CI) kill
 
 .PHONY: server
