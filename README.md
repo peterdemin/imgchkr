@@ -1,4 +1,4 @@
-# Image Validator Take Home Test
+# Image Validator
 
 ## Context
 
