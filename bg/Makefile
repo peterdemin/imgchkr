@@ -51,7 +51,6 @@ test:  ## run unit tests
 lint:  ## run lint tests
 	pylint --rcfile ../pyproject.toml src/$(PROJ)
 	mypy --config-file ../pyproject.toml src/$(PROJ)
-	pytype -j auto src/$(PROJ)
 
 .PHONY: cov
 cov: ## check code coverage
