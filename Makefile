@@ -22,7 +22,7 @@ run_redis:
 
 ### DEPENDENCIES ###
 .PHONY: install_dev
-install_dev:
+install_dev: virtual_env_set
 	$(MAKE) -C api install
 	$(MAKE) -C bg install
 

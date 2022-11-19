@@ -1,113 +1,147 @@
 # Image Validator
 
-## Context
+## Getting Started
 
-Labelbox’s Annotate product allows Machine Learning teams to efficiently send unstructured data of various data modalities (images, videos, audio, text, pdfs, DICOM studies, etc) to a human workforce to label.
-The high-level goal of this project is to build a pipeline for validating image assets that Labelbox receives from its customers so each labeller is guaranteed a working asset to annotate.
+Image validator checks that an image file is valid:
 
+- The file is reachable by the server.
+- The file size is under 10 MB.
+- The file is a JPEG image.
+- The image has width and height not greater than 1000px.
 
-## Before you start…
+During validation, progress is reported through notification URLs.
+If any URL is invalid or not provided, submission is rejected.
 
-During your implementation, feel free to leverage all/any open-source libraries that you deem fit. 
-Although we currently use Python for most of our backend services with a sprinkling of Golang, feel free to use the language/technologies you are the most proficient in. 
-You can assume that the evaluator of this project will be running a  *nix machine in a terminal with only make, vim, docker, and docker-compose installed and won’t have any of the standard libraries and dependencies required for your implementation. 
+Valid but unreachable URLs are reported back, but do not block image validation.
 
-## Requirements
+## Usage
 
-The service should accept an image, and return an HTTP 202 with the id of the asset after it has been successfully queued up for processing.
-It accepts a reference to the image file and webhook URLs to notify the caller of progress.
-For the sake of this exercise, you can assume the image is on the same machine as the server.
+API accepts JSON POST payloads at `/assets/image` path.
+All parameters are required:
+
+- `assetPath`:
+    - `location` - location type, currently only "local" is supported.
+    - `path` - local filesystem path, (e.g., "images/small.jpg").
+- `notifications`:
+    - `onStart` - URL to be notified when image validation begins.
+    - `onSuccess` - URL to be notified when image validation finishes successfully - no issues found.
+    - `onFailure` - URL to be notified when issues are found.
+
+Example request:
 
 ```
-curl -H "content-type: application/json" -XPOST http://your-service/assets/image 
+curl http://imgchkr/assets/image \
+    -XPOST -H "content-type: application/json" \
+    -d '{"assetPath": {"location":"local","path":"images/small.jpg"}, \
+        "notifications":{ \
+            "onStart":"http://callback/print/onStart", \
+            "onSuccess":"http://callback/print/onSuccess", \
+            "onFailure":"http://callback/print/onFailure"}}'
+```
+
+Example response:
+
+```
 {
-    “assetPath”: { 
-        "location": "local",
-        "path": "./images/foo"
-    },
-    “notifications”: {
-     "onStart": "http://somevalidurl.com",
-     "onSuccess": "http://somevalidurl.com",
-     "onFailure": "http://somevalidurl.com"
-   }
+  "id": "497ea3c4-180a-4292-8cc2-0aa1d500d80f",
+  "state": "queued"
 }
+```
 
-# When successful this returns
+To fetch status of queued submission on demand,
+put `id` value in this GET request:
+
+```
+curl http://127.0.0.1:5001/assets/image/<ID>
+```
+
+For example:
+
+```curl http://127.0.0.1:5001/assets/image/497ea3c4-180a-4292-8cc2-0aa1d500d80f
 {
- "id": "abc12",
- "state": "queued"
+  "id": "497ea3c4-180a-4292-8cc2-0aa1d500d80f",
+  "state": "success"
 }
 ```
 
-After the asset has been accepted, it is queued up for validation.
-The validation rules are below.
-Your service should broadcast as many validation errors as possible to the user.
 
-- The file is reachable by the server
-- Only images are accepted
-- Acceptable images are jpegs
-- The jpeg does not have a width or height greater than 1000px.
-- The notification URLs are valid
+## Running Tests
 
-For the lifecycle of the pipeline, it broadcasts the state via the supplied notification URLs.
+Tests can be run inside of Docker containers:
 
 ```
-# called when the asset state moves from queued -> working
-onStart({id: "assetId", state: "started"}) 
-
-# called when working -> complete
-onSuccess({id: "assetId", state: "success"})
-
-# called when the state goes from anything to failed
-onFailure({  
-    "id": "assetId",
-    "state": "failed",
-    "errors": {
-          "asset": ["is not a jpeg"]
-          "onStart": ["is not a valid URL"],
-          "onFailure": ["is not a valid URL"]
-          }
- })
+make test  # unit tests
+make test-e2e  # end-to-end tests
 ```
 
-## Developer Experience Requirements
-
-The evaluator will run the following, which is expected to complete successfully.
+Or in the activate virtualenv:
 
 ```
-make test-e2e # which will exercise your end to end system for scenarios
-make test # runs unit tests on the various modules
-make server # will run the service locally to allow the evaluator to access the service via curl commands
+make install coverage lint
 ```
 
-In addition to a working solution, please include a README.md file with at least the following topics addressed.
-If you can think of more topics to discuss feel free to add them! 
+## Running service
 
-Getting Started
+Service can be run inside of Docker containers:
+
+```
+make server
+make dev-server  # Adds extra containers for local development
+```
+
+Or in the activate virtualenv:
+
+```
+make install
+make run_api    # Run API in foreground mode
+make run_bg     # Run background worker in foreground mode
+make run_redis  # Runs a Dockerized redis
+```
+
+## Architecture
+
+Service uses two-tier architecture:
+
+1. JSON HTTP API accepts image asset submissions and pushes them to background processing queue.
+   It responds back with task ID, that can be used to check the job status later.
+2. Background worker processing image submissions from a queue.
+   During processing it uses web hooks to notify about progress for the following events: started, success, and failed. 
+
+Services use external queue broker (RabbitMQ and Redis are supported) for interaction.
 
 
-Running Tests
+## Security Concerns
 
 
-Architecture
-
-
-Security Concerns
-
-
-Scalability
+## Scalability
 
 
 How would you scale this implementation?
 
 
-Monitoring
+## Monitoring
 
 
 Thoughts on the key metrics you would track to understand the health of this service
 
+## Dependency management
 
-Future work
+This project uses [pip-compile-multi](https://pypi.org/project/pip-compile-multi/) for hard-pinning dependencies versions.
+Please see its documentation for usage instructions.
+In short, `requirements/base.in` contains the list of direct requirements with occasional version constraints (like `Django<2`)
+and `requirements/base.txt` is automatically generated from it by adding recursive tree of dependencies with fixed versions.
+The same goes for other requirements files.
+
+To upgrade dependency versions, run `make upgrade`.
+
+To add a new dependency without upgrade, add it to `requirements/<appropriate-env>.in` and run `make lock`.
+
+For installation always use `.txt` files. For example, command `pip install -r requirements/local.txt`
+will install all dependencies for this project.
+Another useful command is `make sync`, it install all requirements and uninstalls packages
+from your virtualenv that aren't listed.
+
+## Future work
 
 Some ideas on how you would tackle any missing requirements.
 Ideas on how to make the service amenable to accepting more data types for validation.
