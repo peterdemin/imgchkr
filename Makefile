@@ -72,6 +72,10 @@ coverage:
 
 
 ### DOCKER ###
+.PHONY: build
+build:
+	$(COMPOSE_CI) build
+
 .PHONY: test
 test:
 	$(COMPOSE_CI) up ci
@@ -79,7 +83,7 @@ test:
 .PHONY: test-e2e
 test-e2e:
 	$(COMPOSE_CI) up --exit-code-from e2e e2e
-	$(COMPOSE_CI) down
+	$(COMPOSE_CI) kill
 
 .PHONY: server
 server:
