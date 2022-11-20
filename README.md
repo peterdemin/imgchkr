@@ -29,7 +29,7 @@ All parameters are required:
 
 Example request:
 
-```
+```bash
 curl http://imgchkr/assets/image \
     -XPOST -H "content-type: application/json" \
     -d '{"assetPath": {"location":"local","path":"images/small.jpg"}, \
@@ -41,7 +41,7 @@ curl http://imgchkr/assets/image \
 
 Example response:
 
-```
+```json
 {
   "id": "497ea3c4-180a-4292-8cc2-0aa1d500d80f",
   "state": "queued"
@@ -51,13 +51,13 @@ Example response:
 To fetch status of queued submission on demand,
 put `id` value in this GET request:
 
-```
+```bash
 curl http://127.0.0.1:5001/assets/image/<ID>
 ```
 
 For example:
 
-```
+```bash
 curl http://127.0.0.1:5001/assets/image/497ea3c4-180a-4292-8cc2-0aa1d500d80f
 {
   "id": "497ea3c4-180a-4292-8cc2-0aa1d500d80f",
@@ -65,19 +65,30 @@ curl http://127.0.0.1:5001/assets/image/497ea3c4-180a-4292-8cc2-0aa1d500d80f
 }
 ```
 
+Service sends notifications to configured URLs, here're a few examples:
+
+```json
+onStart: {"id": "00000000-0000-0000-0000-000000000000", "state": "started"}
+
+onSuccess: {"id": "00000000-0000-0000-0000-000000000000", "state": "success"}
+
+onFailure: {"id": "00000000-0000-0000-0000-000000000000", "state": "failed",
+            "errors": {"image": ["Image width exceeds maximum (1800/1000)",
+                       "Image height exceeds maximum (1200/1000)"]}}
+```
 
 ## Running Tests
 
 Tests can be run inside of Docker containers:
 
-```
+```bash
 make test      # unit tests
 make test-e2e  # end-to-end tests
 ```
 
 Or in the active virtualenv:
 
-```
+```bash
 make install coverage lint
 ```
 
@@ -85,18 +96,38 @@ make install coverage lint
 
 Service can be run inside of Docker containers:
 
-```
+```bash
 make server
 make dev-server  # Adds extra containers for local development
 ```
 
 Or in the activate virtualenv:
 
-```
+```bash
 make install
 make run_api    # Run API in foreground mode
 make run_bg     # Run background worker in foreground mode
 make run_redis  # Runs a Dockerized redis
+```
+
+When running services locally, you can run end-to-end tests using command:
+
+```bash
+make local-e2e
+```
+
+Dev server launches Flower for queue monitoring at http://127.0.0.1:5555
+
+To add more workers:
+
+```bash
+docker-compose up -d --scale worker=5 --no-recreate
+```
+
+To shut down:
+
+```bash
+docker-compose down
 ```
 
 ## Architecture
@@ -113,17 +144,48 @@ Services use external queue broker (RabbitMQ and Redis are supported) for intera
 
 ## Security Concerns
 
+The service can be used only internally, and it doesn't have much security features in place.
+If this service is to be exposed to untrusted parties, following aspects can be improved:
+
+1. **Caller authentication**. Currently, service accepts image asset submissions without verifying authenticity of a caller.
+   This can be improved by adding token authentication.
+2. **Call signature**. HMAC-like request signature can protect against replay attacks, and leaked tokens.
+3. **Allowed domains for notification URLs**. Currently, service attempts to deliver notifications to any specified URL,
+   which might cause a DoS threat to other services. Allowed domains could be set up per-consumer, or globally for the cluster.
+4. **Allowed directories for image paths**. Even though file data is not exposed to the caller, this service can be used
+   to snoop what files are present on the target host. Having a check to look only inside of special image directory can mitigate this.
 
 ## Scalability
 
+API and background workers can be scaled independently using different signals.
+API service is meant to be deployed behind a load balancer.
+Background workers pick tasks from a shared queue.
 
-How would you scale this implementation?
+Response latency and CPU load can be used to scale the number of API instances.
+Queue length can be a signal to scale the number of background workers.
 
+## Multitenant Fairness
+
+In case the service is deployed in multi-tenant environment, it would need
+to have a queue sharding logic. Currently, one consumer can overload the system,
+and cause degraded performance for all other clients.
 
 ## Monitoring
 
+Service uses structlog for both API and background worker, which simplifies ingestion in log aggregation tools,
+such as ELK or Graylog.
 
-Thoughts on the key metrics you would track to understand the health of this service
+In addition to logging event, API exposes `/metrics` endpoint for integration with Prometheus (Grafana).
+
+Metrics of the background worker can be exposed using Celery's built in features through a separate Docker container.
+
+Alerts need to cover:
+
+- Non-200 status codes in the API responses.
+- API P90 latency threshold.
+- API and worker CPU usage utilization.
+- Worker RAM utilization.
+- Ratio of success to failure in image validation.
 
 ## Dependency management
 
@@ -144,35 +206,10 @@ from your virtualenv that aren't listed.
 
 ## Future work
 
-Some ideas on how you would tackle any missing requirements.
-Ideas on how to make the service amenable to accepting more data types for validation.
-Anything else you can think of.
+Product quality can be improved with the following tasks:
 
-
-## Docker Flask Celery Redis
-
-### Build & Launch
-
-```bash
-docker-compose up -d --build
-```
-
-### Enable hot code reload
-
-```
-docker-compose -f docker-compose.development.yml up --build
-```
-
-This will expose the Flask application's endpoints on port `5001` as well as
-a [Flower](https://github.com/mher/flower) server for monitoring workers on port `5555`
-
-To add more workers:
-```bash
-docker-compose up -d --scale worker=5 --no-recreate
-```
-
-To shut down:
-
-```bash
-docker-compose down
-```
+1. Address security concerns from above.
+2. Extract common infrastructure to reusable libraries.
+3. Enforce contracts between API service and background worker.
+4. Add support for other image formats (PNG, GIF, etc).
+5. Allow client to supply unique image ID, so they don't have to track task ID generated by this service.
