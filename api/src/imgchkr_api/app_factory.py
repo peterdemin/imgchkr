@@ -10,6 +10,7 @@ from imgchkr_api.payload_validator import PayloadValidator
 from imgchkr_api.receiver import ImageCheckRequestReceiver
 from imgchkr_api.schemas import ValidateImageRequestSchema
 from imgchkr_api.validate_image_task_sender import ValidateImageTaskSender
+from imgchkr_api.metrics import metrics
 
 
 def build_app() -> Flask:
@@ -20,6 +21,7 @@ def build_app() -> Flask:
         broker=os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379'),
         backend=os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379'),
     )
+    metrics.init_app(app)
     ValidateImageEndpoint(
         celery=celery,
         receiver=ImageCheckRequestReceiver(

@@ -2,3 +2,4 @@
 
 flask
 gunicorn
+prometheus-flask-exporter

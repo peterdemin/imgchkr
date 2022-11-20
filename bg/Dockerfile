@@ -25,4 +25,6 @@ RUN apk add libmagic
 
 COPY --from=build-image /opt/venv /opt/venv
 
-CMD ["celery", "--app", "imgchkr_bg.cli", "worker", "--concurrency=10", "--loglevel=INFO", "-E"]
+CMD ["celery", "--app", "imgchkr_bg.cli", "worker", \
+     "--concurrency=10", "--loglevel=INFO", "-E" \
+     "control", "enable_events"]

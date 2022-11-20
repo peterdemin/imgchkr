@@ -16,13 +16,15 @@ class HealthEndpoint:
         return jsonify("ok")
 
     def deep_health_check(self) -> Response:
+        result = {}
         task = self._celery.send_task(HEALTH_TASK)
         try:
-            result = task.get(timeout=5)
+            result['health_task'] = task.get(timeout=5)
         except CeleryTimeoutError:
-            result = 'timeout'
+            result['health_task'] = 'timeout'
+        result['ping'] = self._celery.control.ping()
         self._logger.info("health.deep", status=result)
-        return jsonify({'bg': result})
+        return jsonify(result)
 
     def bind(self, app: Flask) -> None:
         app.add_url_rule(
