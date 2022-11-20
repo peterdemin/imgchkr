@@ -111,3 +111,4 @@ down:
 clean:
 	$(MAKE) -C api clean
 	$(MAKE) -C bg clean
+	rm -rf testing/__pycache__
