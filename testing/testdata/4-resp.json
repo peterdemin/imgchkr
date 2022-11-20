@@ -1,8 +1,8 @@
 {
   "errors": {
     "notifications": {
-      "on_start": "[Errno 99] Address not available",
-      "on_success": "[Errno 99] Address not available"
+      "on_start": "[Errno 61] Connection refused",
+      "on_success": "[Errno 61] Connection refused"
     }
   },
   "id": "00000000-0000-0000-0000-000000000000",

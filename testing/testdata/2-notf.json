@@ -1,0 +1,2 @@
+onStart: {"id": "00000000-0000-0000-0000-000000000000", "state": "started"}
+onFailure: {"id": "00000000-0000-0000-0000-000000000000", "state": "failed", "errors": {"image": ["Image width exceeds maximum (1800/1000)", "Image height exceeds maximum (1200/1000)"]}}

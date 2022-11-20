@@ -71,6 +71,12 @@ coverage:
 	$(MAKE) -C api coverage
 	$(MAKE) -C bg coverage
 
+.PHONY: local-e2e
+local-e2e:
+	pytest -vvvs \
+		--api-host=127.0.0.1 \
+		--callback-host=127.0.0.1 \
+		testing/test_golden.py
 
 ### DOCKER ###
 .PHONY: build
