@@ -6,7 +6,7 @@ flake8-pyproject
 pylint
 pytest
 pytest-cov
-coverage
+coverage[toml]
 mypy
 celery-types
 types-Pillow

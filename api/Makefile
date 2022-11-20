@@ -59,10 +59,11 @@ lint:  ## run lint tests
 
 .PHONY: cov
 cov: ## check code coverage
-	pytest -vvvs --cov=$(PROJ)
-	coverage report -m
-	coverage html
+	pytest -vvvs --cov=$(PROJ) --cov-branch \
+		--cov-fail-under=90 --cov-report=
+	coverage report --rcfile ../pyproject.toml -m
 
 .PHONY: coverage
 coverage: cov ## open code coverage report in browser
+	coverage html --rcfile ../pyproject.toml
 	$(BROWSER) htmlcov/index.html
