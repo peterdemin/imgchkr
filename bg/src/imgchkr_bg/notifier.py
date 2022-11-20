@@ -26,9 +26,10 @@ class Notifier:
             try:
                 response = self._client.post(url, json=payload)
                 response.raise_for_status()
-            except httpx.HTTPError as exc:
+            except httpx.HTTPError:
                 log.exception("notification.failed")
-                return exc.args[0]
+                # Use generic error message for cross-platform consistency and "security"
+                return 'Notification failed'
             log.info("notification.sent")
             return ''
         log.warning("notification.skipped")

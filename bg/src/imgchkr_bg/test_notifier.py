@@ -32,13 +32,13 @@ class NotifierTestCase(unittest.TestCase):
     def test_failed_post_returns_error(self) -> None:
         self._client.post.side_effect = httpx.ConnectError('message')
         result = self._notifier('url', {'key': 'value'})
-        assert result == 'message'
+        assert result == 'Notification failed'
         self._client.post.assert_called_once_with('url', json={'key': 'value'})
         self._logger.exception.assert_called_once_with('notification.failed')
 
     def test_bad_status_code_returns_error(self) -> None:
         self._response.raise_for_status.side_effect = httpx.HTTPError('not found')
         result = self._notifier('url', {'key': 'value'})
-        assert result == 'not found'
+        assert result == 'Notification failed'
         self._client.post.assert_called_once_with('url', json={'key': 'value'})
         self._logger.exception.assert_called_once_with('notification.failed')
