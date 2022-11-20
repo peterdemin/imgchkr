@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from .image_header_checker import ImageHeaderChecker
+from imgchkr_bg.image_header_checker import ImageHeaderChecker
 
 _HERE = os.path.dirname(__file__)
 _TESTDATA = os.path.join(_HERE, 'testdata')

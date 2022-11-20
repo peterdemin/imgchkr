@@ -2,7 +2,7 @@ import os.path
 import contextlib
 from typing import BinaryIO, Optional, Iterator
 
-from .base_location_downloader import BaseLocationDownloader
+from imgchkr_bg.base_location_downloader import BaseLocationDownloader
 
 
 class LocalFileReader(BaseLocationDownloader):

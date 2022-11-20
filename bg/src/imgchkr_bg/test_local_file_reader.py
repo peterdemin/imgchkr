@@ -2,7 +2,7 @@ import os
 import unittest
 from zlib import adler32
 
-from .local_file_reader import LocalFileReader
+from imgchkr_bg.local_file_reader import LocalFileReader
 
 _HERE = os.path.dirname(__file__)
 _TESTDATA = os.path.join(_HERE, 'testdata')

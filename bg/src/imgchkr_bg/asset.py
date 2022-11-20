@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from .base_location_downloader import BaseLocationDownloader
+from imgchkr_bg.base_location_downloader import BaseLocationDownloader
 
 
 class Asset:

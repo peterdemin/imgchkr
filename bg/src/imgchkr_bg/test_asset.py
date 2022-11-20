@@ -1,8 +1,8 @@
 import unittest
 from unittest import mock
 
-from .asset import Asset
-from .base_location_downloader import BaseLocationDownloader
+from imgchkr_bg.asset import Asset
+from imgchkr_bg.base_location_downloader import BaseLocationDownloader
 
 
 class AssetTestCase(unittest.TestCase):
