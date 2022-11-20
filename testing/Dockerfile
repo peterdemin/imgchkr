@@ -9,7 +9,8 @@ RUN apk add libmagic make
 COPY requirements /requirements
 RUN pip install -r requirements/ci.txt
 
-COPY . /imgchkr
+COPY api /imgchkr/api
+COPY bg /imgchkr/bg
 WORKDIR /imgchkr
 
 EXPOSE 5002
