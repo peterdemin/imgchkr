@@ -4,8 +4,8 @@
     "path": "bg/src/imgchkr_bg/testdata/small.jpg"
   },
   "notifications": {
-    "onStart": "http://localhost",
-    "onSuccess": "http://localhost",
-    "onFailure": "http://localhost"
+    "onStart": "http://unresolvablehost",
+    "onSuccess": "http://unresolvablehost",
+    "onFailure": "http://unresolvablehost"
   }
 }

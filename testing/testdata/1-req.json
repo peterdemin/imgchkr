@@ -1,7 +1,7 @@
 {
   "assetPath": {
     "location": "local",
-    "path": "src/imgchkr_bg/testdata/small.jpg"
+    "path": "missing-file"
   },
   "notifications": {
     "onStart": "http://monitor:5002/print/onStart",

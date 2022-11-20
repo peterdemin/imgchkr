@@ -5,7 +5,6 @@
   },
   "notifications": {
     "onStart": "http://somevalidurl.com",
-    "onSuccess": "http://somevalidurl.com",
-    "onFailure": "invalid"
+    "onSuccess": "http://somevalidurl.com"
   }
 }

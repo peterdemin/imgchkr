@@ -4,6 +4,11 @@
       "location": [
         "Not a valid string."
       ]
+    },
+    "notifications": {
+      "onFailure": [
+        "Missing data for required field."
+      ]
     }
   },
   "state": "failed"
