@@ -105,9 +105,8 @@ def _find_output_file(request_file: str, output_pattern: str) -> str:
 
 
 def _wait_for_task(status: dict, status_url_pattern: str) -> dict:
-    for attempt in range(20):
-        if attempt > 0:
-            time.sleep(0.5)
+    for attempt in range(10):
+        time.sleep(attempt)
         if status['state'] != 'queued':
             break
         response = httpx.get(status_url_pattern.format(status['id']))
