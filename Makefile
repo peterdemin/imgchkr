@@ -85,7 +85,7 @@ build:
 
 .PHONY: test
 test:
-	$(COMPOSE_CI) up ci
+	$(COMPOSE_CI) up --abort-on-container-exit --exit-code-from ci ci
 
 .PHONY: test-e2e
 test-e2e:
