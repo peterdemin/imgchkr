@@ -67,3 +67,8 @@ cov: ## check code coverage
 coverage: cov ## open code coverage report in browser
 	coverage html --rcfile ../pyproject.toml
 	$(BROWSER) htmlcov/index.html
+
+.PHONY: fmt
+fmt:
+	isort src/$(PROJ)
+	black src/$(PROJ)

@@ -7,6 +7,9 @@ ifndef VIRTUAL_ENV
 	$(error VIRTUAL_ENV not set)
 endif
 
+PASSTHROUGH := fmt cov lint coverage
+
+
 ### DEV ###
 .PHONY: run_bg
 run_api:
@@ -56,27 +59,17 @@ t:
 	$(MAKE) -C bg test
 	@diff -u api/src/imgchkr_api/constants.py bg/src/imgchkr_bg/constants.py
 
-.PHONY: lint
-lint:
-	$(MAKE) -C api lint
-	$(MAKE) -C bg lint
-
-.PHONY: cov
-cov:
-	$(MAKE) -C api cov
-	$(MAKE) -C bg cov
-
-.PHONY: coverage
-coverage:
-	$(MAKE) -C api coverage
-	$(MAKE) -C bg coverage
-
 .PHONY: local-e2e
 local-e2e:
 	pytest -vvvs \
 		--api-host=127.0.0.1 \
 		--callback-host=127.0.0.1 \
 		testing/test_golden.py
+
+.PHONY: $(PASSTHROUGH)
+$(PASSTHROUGH):
+	$(MAKE) -C api $@
+	$(MAKE) -C bg $@
 
 ### DOCKER ###
 .PHONY: build

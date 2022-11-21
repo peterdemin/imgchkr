@@ -1,6 +1,6 @@
-import os.path
 import contextlib
-from typing import BinaryIO, Optional, Iterator
+import os.path
+from typing import BinaryIO, Iterator, Optional
 
 from imgchkr_bg.base_location_downloader import BaseLocationDownloader
 

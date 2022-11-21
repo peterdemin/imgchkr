@@ -2,8 +2,8 @@ from typing import Tuple
 
 from imgchkr_bg.asset_downloader import AssetDownloader
 from imgchkr_bg.base_location_downloader import LocationType
-from imgchkr_bg.image_header_checker import ImageHeaderChecker
 from imgchkr_bg.image_checker import ImageChecker
+from imgchkr_bg.image_header_checker import ImageHeaderChecker
 
 
 class ImageValidator:

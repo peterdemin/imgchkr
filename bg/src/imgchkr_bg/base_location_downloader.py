@@ -1,5 +1,5 @@
-from typing import Dict, Any
 import enum
+from typing import Any, Dict
 
 
 class LocationType(enum.Enum):

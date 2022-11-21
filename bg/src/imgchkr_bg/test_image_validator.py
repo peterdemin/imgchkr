@@ -4,8 +4,8 @@ from unittest import mock
 from imgchkr_bg.asset import Asset
 from imgchkr_bg.asset_downloader import AssetDownloader
 from imgchkr_bg.base_location_downloader import LocationType
-from imgchkr_bg.image_header_checker import ImageHeaderChecker
 from imgchkr_bg.image_checker import ImageChecker
+from imgchkr_bg.image_header_checker import ImageHeaderChecker
 from imgchkr_bg.image_validator import ImageValidator
 
 

@@ -1,4 +1,5 @@
 from typing import Mapping
+
 from marshmallow import Schema, ValidationError
 
 

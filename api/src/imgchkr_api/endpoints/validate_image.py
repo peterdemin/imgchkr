@@ -1,4 +1,4 @@
-from typing import Dict, Mapping, Optional, Tuple, cast, Any, Type
+from typing import Any, Dict, Mapping, Optional, Tuple, Type, cast
 
 import structlog
 from celery import Celery, states

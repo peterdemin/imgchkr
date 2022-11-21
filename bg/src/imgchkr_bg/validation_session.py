@@ -93,9 +93,7 @@ class _ValidationSession:  # pylint: disable=too-many-instance-attributes
         if self._state == self._FAILED:
             # Don't notify if parameters are invalid
             return
-        notification_error = self._notifier(
-            self._request.on_start, self._format_result()
-        )
+        notification_error = self._notifier(self._request.on_start, self._format_result())
         if notification_error:
             self._errors['notifications'] = {'on_start': notification_error}
 

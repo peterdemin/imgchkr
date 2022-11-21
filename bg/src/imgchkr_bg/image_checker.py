@@ -1,5 +1,6 @@
-from typing import Dict, List
 from io import BytesIO
+from typing import Dict, List
+
 from PIL import Image
 
 
