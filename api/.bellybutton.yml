@@ -1,0 +1,47 @@
+settings:
+  all_files: &all_files !settings
+    included:
+      - ~+/*
+    excluded:
+      - ~+/.tox/*
+    allow_ignore: yes
+
+default_settings: *all_files
+
+rules:
+  ExampleRule:
+    description: "Empty module."
+    expr: /Module/body[not(./*)]
+    example: ""
+    instead: |
+      """This module has a docstring."""
+
+  DeprecatedFnCall:
+    description: "`deprecated_fn` will be deprecated in v9.1.2. Please use `new_fn` instead."
+    expr: //Call[func/Name/@id='deprecated_fn']
+    example: "deprecated_fn(*values)"
+    instead: "new_fn(values)"
+
+  OpenCall:
+    description: "API must not open any files"
+    expr: //Call[func/Name/@id='open']
+    example: "open(path)"
+
+  PrintCall:
+    description: "No print calls"
+    expr: //Call[func/Name/@id='print']
+    example: "print(*values)"
+    instead: "logger.info(values)"
+
+  GlobalFlaskVar:
+    description: "Global Flask instance"
+    expr: //Call/func/Name[@id='Flask' and not (ancestor::FunctionDef)]
+
+  GlobalCeleryVar:
+    description: "Global Celery instance"
+    expr: //Call/func/Name[@id='Flask' and not (ancestor::FunctionDef)]
+    
+  GlobalVar:
+    description: "Global var"
+    expr:
+      /Module/body/Assign[not(value//Constant[@value])]

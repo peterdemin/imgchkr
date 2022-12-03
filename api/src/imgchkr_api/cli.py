@@ -1,6 +1,6 @@
 from imgchkr_api.app_factory import build_app
 
-app = build_app()
+app = build_app()  # bb: ignore
 
 
 def serve():

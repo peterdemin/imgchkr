@@ -1,7 +1,7 @@
 from marshmallow import Schema as _Schema
 from marshmallow import fields, validate
 
-Nested = fields.Nested
+Nested = fields.Nested  # bb: ignore
 __all__ = ('Schema', 'Parameter', 'Nested')
 
 
