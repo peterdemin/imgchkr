@@ -31,3 +31,13 @@ services:
     image: redis:alpine
     ports:
       - "6379:6379"
+
+  devpi:
+    build:
+      context: .
+      dockerfile: devpi/Dockerfile
+    volumes: ['./bg:/bg']
+    ports:
+      - 3141:3141
+    volumes:
+      - .package-index:/devpi
