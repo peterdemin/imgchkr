@@ -46,11 +46,16 @@ sync: sync_ext install_dev
 .PHONY: lock
 lock: virtual_env_set
 	pip-compile-multi --autoresolve --skip-constraints --use-cache \
-		--no-upgrade
+		--no-upgrade -t requirements/local.in
+	pip-compile-multi --autoresolve --skip-constraints --use-cache \
+		--no-upgrade -t requirements/devpi.in
 
 .PHONY: upgrade
 upgrade: virtual_env_set
-	pip-compile-multi --autoresolve --skip-constraints --use-cache
+	pip-compile-multi --autoresolve --skip-constraints --use-cache \
+		-t requirements/local.in
+	pip-compile-multi --autoresolve --skip-constraints --use-cache \
+		-t requirements/devpi.in
 
 ### LOCAL QA ###
 .PHONY: t

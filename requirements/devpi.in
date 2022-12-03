@@ -1,0 +1,10 @@
+# Main server and web views
+devpi-server
+devpi-client
+devpi-web
+
+# Web extensions
+devpi-findlinks
+
+# Tools
+devpi-cleaner
