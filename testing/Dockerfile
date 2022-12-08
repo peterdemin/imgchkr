@@ -9,13 +9,14 @@ RUN apk add libmagic make
 COPY requirements /requirements
 RUN pip install -r requirements/ci.txt
 
-COPY api /imgchkr/api
-COPY bg /imgchkr/bg
 WORKDIR /imgchkr
+COPY api api
+COPY bg bg
+COPY lib lib
 
 EXPOSE 5002
 EXPOSE 5555
 
-RUN pip install ./api ./bg
+RUN pip install ./api ./bg ./lib
 
 CMD ["/bin/sh", "testing/start.sh"]

@@ -7,9 +7,9 @@ ENV PATH="/opt/venv/bin:$PATH"
 COPY requirements /requirements
 RUN pip install -r requirements/background.txt
 
-COPY bg /pkg
-WORKDIR /pkg
-RUN pip install .
+COPY bg /bg
+COPY lib /deps
+RUN pip install ./bg ./deps
 
 # 8< - - - - - - - - - - - - - - - - - - - - - - - -
 

@@ -5,5 +5,5 @@ setup(
     version='0.0.0',
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    install_requires=['imgchkr_lib'],
+    # install_requires=['imgchkr_lib'],
 )

@@ -2,11 +2,12 @@ from logging import getLogger
 from typing import Any, Dict
 
 import structlog
+from marshmallow import ValidationError
+
 from imgchkr_lib.base_location_downloader import LocationType
 from imgchkr_lib.image_validator import ImageValidator
 from imgchkr_lib.notifier import Notifier
 from imgchkr_lib.schemas import FlatValidateImageRequestSchema, ValidateImageRequest
-from marshmallow import ValidationError
 
 LOGGER = getLogger(__name__)
 

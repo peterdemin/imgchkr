@@ -3,6 +3,7 @@ from unittest import mock
 
 import httpx
 import structlog
+
 from imgchkr_lib.notifier import Notifier
 
 
