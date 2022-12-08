@@ -47,6 +47,7 @@ gunicorn:  ## run API server in debug mode
 .PHONY: clean
 clean:  ## remove all build artifacts
 	rm -rf build dist htmlcov src/*.egg-info .*_cache .pytype .coverage
+	rm *.png
 	find src -type d -name __pycache__ -delete
 	find src -type f -name '*.pyc' -delete
 

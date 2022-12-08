@@ -4,7 +4,6 @@ from typing import Optional
 from unittest import mock
 
 import structlog
-
 from imgchkr_lib.base_location_downloader import LocationType
 from imgchkr_lib.image_validator import ImageValidator
 from imgchkr_lib.notifier import Notifier

@@ -1,6 +1,5 @@
 import httpx
 import structlog
-
 from imgchkr_lib.asset_downloader import AssetDownloader
 from imgchkr_lib.base_location_downloader import LocationType
 from imgchkr_lib.image_checker import ImageChecker

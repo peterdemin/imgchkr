@@ -1,5 +1,4 @@
 import structlog
-
 from imgchkr_lib.image_validator import ImageValidator
 from imgchkr_lib.notifier import Notifier
 from imgchkr_lib.validation_session import ValidationSession

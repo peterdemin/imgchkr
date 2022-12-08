@@ -7,7 +7,7 @@ ifndef VIRTUAL_ENV
 	$(error VIRTUAL_ENV not set)
 endif
 
-PASSTHROUGH := fmt cov lint coverage
+PASSTHROUGH := fmt cov lint coverage uml
 
 
 ### DEV ###
