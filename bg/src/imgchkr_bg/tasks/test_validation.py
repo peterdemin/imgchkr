@@ -4,9 +4,9 @@ from unittest import mock
 
 from celery import Celery
 
+from imgchkr_lib.validation_task import ValidationTask
 from imgchkr_bg.constants import VALIDATE_IMAGE_TASK
 from imgchkr_bg.tasks.validation import CeleryValidationTask
-from imgchkr_lib.validation_task import ValidationTask
 
 
 class ValidationTaskTestCase(unittest.TestCase):

@@ -3,9 +3,9 @@ import os
 import structlog
 from celery import Celery
 
+from imgchkr_lib.validation_task_factory import build_validation_task
 from imgchkr_bg.tasks.health import HealthCheckTask
 from imgchkr_bg.tasks.validation import CeleryValidationTask
-from imgchkr_lib.validation_task_factory import build_validation_task
 
 
 def build_worker() -> Celery:
