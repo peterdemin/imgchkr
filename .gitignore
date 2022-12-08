@@ -134,3 +134,6 @@ Session.vim
 
 # DevPI
 .package-index
+
+# Docs
+*.png

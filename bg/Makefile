@@ -22,6 +22,8 @@ endef
 export PRINT_HELP_PYSCRIPT
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
 PROJ := imgchkr_bg
+SRC_DIR := src/$(PROJ)
+TEST_FILES := (find $(SRC_DIR) -type f -name 'test_*.py' -exec basename {} \;)
 
 help:
 	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
@@ -41,7 +43,7 @@ run:  ## run background worker in debug mode with autoreload
 
 .PHONY: clean
 clean:  ## remove all build artifacts
-	rm -rf build dist htmlcov src/*.egg-info
+	rm -rf build dist htmlcov src/*.egg-info .*_cache .pytype .coverage
 	find src -type d -name __pycache__ -delete
 	find src -type f -name '*.pyc' -delete
 
@@ -51,8 +53,8 @@ test:  ## run unit tests
 
 .PHONY: lint
 lint:  ## run lint tests
-	pylint --rcfile ../pyproject.toml src/$(PROJ)
-	mypy --config-file ../pyproject.toml src/$(PROJ)
+	pylint --rcfile ../pyproject.toml $(SRC_DIR)
+	mypy --config-file ../pyproject.toml $(SRC_DIR)
 
 .PHONY: cov
 cov: ## check code coverage
@@ -67,5 +69,13 @@ coverage: cov ## open code coverage report in browser
 
 .PHONY: fmt
 fmt:
-	isort src/$(PROJ)
-	black src/$(PROJ)
+	isort $(SRC_DIR)
+	black $(SRC_DIR)
+
+.PHONY: uml
+uml:
+	pyreverse \
+		-o png \
+		-p $(PROJ) \
+		--ignore $$($(TEST_FILES) | paste -sd "," - ) \
+		$(SRC_DIR)
