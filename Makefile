@@ -28,6 +28,7 @@ run_redis:
 install_dev: virtual_env_set
 	$(MAKE) -C api install
 	$(MAKE) -C bg install
+	$(MAKE) -C lib install
 
 .PHONY: install_ext
 install_ext: requirements/local.txt virtual_env_set
@@ -62,6 +63,7 @@ upgrade: virtual_env_set
 t:
 	$(MAKE) -C api test
 	$(MAKE) -C bg test
+	$(MAKE) -C lib test
 	@diff -u api/src/imgchkr_api/constants.py bg/src/imgchkr_bg/constants.py
 
 .PHONY: local-e2e
@@ -75,6 +77,7 @@ local-e2e:
 $(PASSTHROUGH):
 	$(MAKE) -C api $@
 	$(MAKE) -C bg $@
+	$(MAKE) -C lib $@
 
 ### DOCKER ###
 .PHONY: build
@@ -109,4 +112,5 @@ down:
 clean:
 	$(MAKE) -C api clean
 	$(MAKE) -C bg clean
+	$(MAKE) -C lib clean
 	rm -rf testing/__pycache__
