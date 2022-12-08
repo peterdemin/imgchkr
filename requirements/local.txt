@@ -10,7 +10,7 @@
 -r ci.txt
 appnope==0.1.3
     # via ipython
-asttokens==2.1.0
+asttokens==2.2.1
     # via stack-data
 backcall==0.2.0
     # via ipython
@@ -26,11 +26,11 @@ executing==1.2.0
     # via stack-data
 ipdb==0.13.9
     # via -r requirements/local.in
-ipython==8.6.0
+ipython==8.7.0
     # via
     #   -r requirements/local.in
     #   ipdb
-jedi==0.18.1
+jedi==0.18.2
     # via ipython
 matplotlib-inline==0.1.6
     # via ipython
@@ -44,9 +44,9 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pip-compile-multi==2.5.0
+pip-compile-multi==2.6.1
     # via -r requirements/local.in
-pip-tools==6.10.0
+pip-tools==6.11.0
     # via pip-compile-multi
 ptyprocess==0.7.0
     # via pexpect
@@ -54,17 +54,17 @@ pure-eval==0.2.2
     # via stack-data
 pygments==2.13.0
     # via ipython
-stack-data==0.6.1
+stack-data==0.6.2
     # via ipython
 toml==0.10.2
     # via ipdb
 toposort==1.7
     # via pip-compile-multi
-traitlets==5.5.0
+traitlets==5.6.0
     # via
     #   ipython
     #   matplotlib-inline
-watchdog==2.1.9
+watchdog==2.2.0
     # via -r requirements/local.in
 wheel==0.38.4
     # via pip-tools

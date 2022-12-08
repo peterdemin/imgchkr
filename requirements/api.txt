@@ -12,7 +12,7 @@ flask==2.2.2
     #   prometheus-flask-exporter
 gunicorn==20.1.0
     # via -r requirements/api.in
-importlib-metadata==5.0.0
+importlib-metadata==5.1.0
     # via flask
 itsdangerous==2.1.2
     # via flask
@@ -28,7 +28,7 @@ prometheus-flask-exporter==0.21.0
     # via -r requirements/api.in
 werkzeug==2.2.2
     # via flask
-zipp==3.10.0
+zipp==3.11.0
     # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:

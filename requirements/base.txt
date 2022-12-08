@@ -25,27 +25,21 @@ click-plugins==1.1.1
     # via celery
 click-repl==0.2.0
     # via celery
-deprecated==1.2.13
-    # via redis
 kombu==5.2.4
     # via celery
 marshmallow==3.19.0
     # via -r requirements/base.in
-packaging==21.3
-    # via
-    #   marshmallow
-    #   redis
-prompt-toolkit==3.0.32
+packaging==22.0
+    # via marshmallow
+prompt-toolkit==3.0.36
     # via click-repl
-pyparsing==3.0.9
-    # via packaging
 pytz==2022.6
     # via celery
-redis==4.3.4
+redis==4.4.0
     # via -r requirements/base.in
 six==1.16.0
     # via click-repl
-structlog==22.2.0
+structlog==22.3.0
     # via -r requirements/base.in
 vine==5.0.0
     # via
@@ -54,5 +48,3 @@ vine==5.0.0
     #   kombu
 wcwidth==0.2.5
     # via prompt-toolkit
-wrapt==1.14.1
-    # via deprecated
