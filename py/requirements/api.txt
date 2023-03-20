@@ -6,30 +6,26 @@
 #    pip-compile-multi
 #
 -r base.txt
-flask==2.2.2
+flask==2.2.3
     # via
     #   -r requirements/api.in
     #   prometheus-flask-exporter
 gunicorn==20.1.0
     # via -r requirements/api.in
-importlib-metadata==5.1.0
-    # via flask
 itsdangerous==2.1.2
     # via flask
 jinja2==3.1.2
     # via flask
-markupsafe==2.1.1
+markupsafe==2.1.2
     # via
     #   jinja2
     #   werkzeug
-prometheus-client==0.15.0
+prometheus-client==0.16.0
     # via prometheus-flask-exporter
-prometheus-flask-exporter==0.21.0
+prometheus-flask-exporter==0.22.3
     # via -r requirements/api.in
-werkzeug==2.2.2
+werkzeug==2.2.3
     # via flask
-zipp==3.11.0
-    # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

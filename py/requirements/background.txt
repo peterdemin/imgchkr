@@ -14,15 +14,15 @@ certifi==2022.12.7
     #   httpx
 h11==0.14.0
     # via httpcore
-httpcore==0.16.2
+httpcore==0.16.3
     # via httpx
-httpx==0.23.1
+httpx==0.23.3
     # via -r requirements/background.in
 idna==3.4
     # via
     #   anyio
     #   rfc3986
-pillow==9.3.0
+pillow==9.4.0
     # via -r requirements/background.in
 python-magic==0.4.27
     # via -r requirements/background.in
