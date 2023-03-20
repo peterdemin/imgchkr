@@ -1,7 +1,7 @@
 {
   "assetPath": {
     "location": "local",
-    "path": "bg/src/imgchkr_bg/testdata/big.jpg"
+    "path": "lib/src/imgchkr_lib/testdata/big.jpg"
   },
   "notifications": {
     "onStart": "http://monitor:5002/print/onStart",

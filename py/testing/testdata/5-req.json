@@ -1,0 +1,11 @@
+{
+  "assetPath": {
+    "location": "local",
+    "path": "small.jpg"
+  },
+  "notifications": {
+    "onStart": "http://localhost:5002/print/onStart",
+    "onSuccess": "http://localhost:5002/print/onSuccess",
+    "onFailure": "http://localhost:5002/print/onFailure"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "assetPath": {
     "location": "local",
-    "path": "bg/src/imgchkr_bg/testdata/small.jpg"
+    "path": "lib/src/imgchkr_lib/testdata/small.jpg"
   },
   "notifications": {
     "onStart": "http://unresolvablehost",
