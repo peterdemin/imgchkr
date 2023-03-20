@@ -1,5 +1,5 @@
-COMPOSE := docker-compose
-COMPOSE_CI := docker-compose -f docker-compose.ci.yml
+COMPOSE := DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose
+COMPOSE_CI := DOCKER_DEFAULT_PLATFORM=linux/amd64 docker-compose -f docker-compose.ci.yml
 
 .PHONY: virtual_env_set
 virtual_env_set:

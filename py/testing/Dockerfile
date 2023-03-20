@@ -13,6 +13,7 @@ WORKDIR /imgchkr
 COPY api api
 COPY bg bg
 COPY lib lib
+COPY testing testing
 
 EXPOSE 5002
 EXPOSE 5555
