@@ -21,7 +21,7 @@ run_bg:
 
 .PHONY: run_redis
 run_redis:
-	docker run --rm -p 6379:6379 redis:alpine
+	docker --platform linux/amd64 run --rm -p 6379:6379 redis:alpine
 
 ### DEPENDENCIES ###
 .PHONY: install_dev

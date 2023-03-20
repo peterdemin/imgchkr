@@ -1,4 +1,4 @@
-FROM python:3.10-alpine AS build-image
+FROM --platform=linux/amd64 python:3.10-alpine AS build-image
 
 RUN python -m venv /opt/venv
 # Activate virtualenv
