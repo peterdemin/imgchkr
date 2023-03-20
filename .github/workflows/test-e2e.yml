@@ -6,4 +6,4 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run tests
-        run: make test-e2e
+        run: cd py; make test-e2e
